@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/aldebug.dir/examples/aldebug.cpp.o -o aldebug  -Wl,-rpath,/home/suky/dev/ww1_game/build/ext/openal-soft-master: -pthread libalsoft.excommon.a fmt-11.0.2/libalsoft.fmtd.a libopenal.so.1.24.1 -lrt 

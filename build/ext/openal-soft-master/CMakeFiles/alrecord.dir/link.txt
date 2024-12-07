@@ -1,1 +1,0 @@
-/usr/bin/cc -g CMakeFiles/alrecord.dir/examples/alrecord.c.o -o alrecord  -Wl,-rpath,/home/suky/dev/ww1_game/build/ext/openal-soft-master: -pthread libalsoft.excommon.a libopenal.so.1.24.1 -lrt 

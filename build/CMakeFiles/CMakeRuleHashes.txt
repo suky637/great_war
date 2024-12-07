@@ -1,3 +1,0 @@
-# Hashes of file build rules.
-ccf8ef03f8790ca0cbc6be8f9ec9b380 ext/openal-soft-master/CMakeFiles/clang-tidy-check
-4eb955ea53af71fc8368378f3029e1b2 ext/openal-soft-master/default_hrtf.txt

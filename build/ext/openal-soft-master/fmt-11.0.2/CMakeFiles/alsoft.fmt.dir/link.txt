@@ -1,2 +1,0 @@
-/usr/bin/ar qc libalsoft.fmtd.a CMakeFiles/alsoft.fmt.dir/src/format.cc.o CMakeFiles/alsoft.fmt.dir/src/os.cc.o
-/usr/bin/ranlib libalsoft.fmtd.a
