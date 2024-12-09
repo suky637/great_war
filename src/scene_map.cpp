@@ -5,6 +5,8 @@ void Europe::ReadGUIJson()
     std::fstream f{game_json.at("guis")[(int)(game_json["currentGUI"])]};
     json dat = json::parse(f);
 
+    std::cout << dat["world_map_gui_config"]["font"] << "\n";
+
     if (!font.loadFromFile(dat["world_map_gui_config"]["font"]))
     {
         std::cerr << "Failed to load font\n";
