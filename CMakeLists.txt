@@ -26,6 +26,8 @@ add_executable(ww1_game
     src/myguilib/Frame.cpp
     src/myguilib/GUI.cpp
     src/myguilib/Label.cpp
+    src/myguilib/DynLabel.cpp
+    src/myguilib/ImageBox.cpp
     src/engine/EngineFunctions.cpp
     src/engine/Scene.cpp
     src/engine/Script.cpp

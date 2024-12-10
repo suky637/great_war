@@ -5,3 +5,5 @@
 #include "myguilib/Frame.h"
 #include "myguilib/GUI.h"
 #include "myguilib/Label.h"
+#include "myguilib/DynLabel.h"
+#include "myguilib/ImageBox.h"

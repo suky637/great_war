@@ -46,6 +46,24 @@ void Europe::ReadGUIJson()
 
             Label{window, gui, position, characterSize, text, id};
         }
+        else if (element["type"] == "DYN_LABEL")
+        {
+            std::string text = element["text"];
+            std::string id = element["id"];
+            sf::Vector2f position{element["position"][0], element["position"][1]};
+            int characterSize = element["scale"];
+
+            DynLabel{window, gui, position, characterSize, text, id};
+        }
+        else if (element["type"] == "IMAGEBOX")
+        {
+            std::string path = element["path"];
+            std::string id = element["id"];
+            sf::Vector2f position{element["position"][0], element["position"][1]};
+            sf::Vector2f scale{element["scale"][0], element["scale"][1]};
+
+            ImageBox{window, gui, position, scale, path, id};
+        }
     }
 
     scripts.push_back(std::make_unique<GUI>(std::move(gui)));

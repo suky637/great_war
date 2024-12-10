@@ -1,6 +1,7 @@
-[-] Europe map display
-[-] Map Editor
-[-] GUI
+[+] Europe map display
+    [ ] finish map-making
+[*] Map Editor
+[+] GUI
 [ ] Battle Simulation
 [ ] Gun modification
 [ ] Research Tree
