@@ -7,3 +7,4 @@
 #include "myguilib/Label.h"
 #include "myguilib/DynLabel.h"
 #include "myguilib/ImageBox.h"
+#include "myguilib/DynImageBox.h"

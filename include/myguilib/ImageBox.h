@@ -20,4 +20,6 @@ class ImageBox: public Component
     public:
     ImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id = "");
     void Draw(sf::Font font) override;
+    std::string GetType() override;
+    ImageBox* GetComponent() override;
 };

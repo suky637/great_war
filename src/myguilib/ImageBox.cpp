@@ -17,3 +17,13 @@ void ImageBox::Draw(sf::Font font)
     this->rect.setTexture(&texture);
     this->win->draw(this->rect);
 }
+
+std::string ImageBox::GetType()
+{
+    return "ImageBox";
+}
+
+ImageBox* ImageBox::GetComponent()
+{
+    return this;
+}

@@ -20,4 +20,6 @@ class Component
     virtual void Input(sf::View* view);
     virtual bool isHovered(sf::View* view);
     virtual void Draw(sf::Font font);
+    virtual std::string GetType();
+    virtual Component* GetComponent();
 };

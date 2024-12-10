@@ -12,14 +12,15 @@
 #include "myguilib/Component.h"
 #include "myguilib/GUI.h"
 
-class Frame: public Component
+class DynImageBox: public Component
 {
     private:
+    sf::Texture texture;
     sf::RectangleShape rect;
     public:
-    Frame(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string id = "");
+    DynImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id = "");
     void Draw(sf::Font font) override;
-    bool isHovered(sf::View* view) override;
+    void Value(std::string path);
     std::string GetType() override;
-    Frame* GetComponent() override;
+    DynImageBox* GetComponent() override;
 };

@@ -19,3 +19,13 @@ void Label::Draw(sf::Font font)
     this->label.setFont(font);
     win->draw(this->label);
 }
+
+std::string Label::GetType()
+{
+    return "Label";
+}
+
+Label* Label::GetComponent()
+{
+    return this;
+}

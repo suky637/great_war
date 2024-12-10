@@ -25,4 +25,6 @@ class Button: public Component
     void Input(sf::View* view) override;
     void Draw(sf::Font font) override;
     bool isHovered(sf::View* view) override;
+    std::string GetType() override;
+    Button* GetComponent();
 };

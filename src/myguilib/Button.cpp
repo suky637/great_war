@@ -83,3 +83,13 @@ bool Button::isHovered(sf::View* view)
         posView.y > this->rect.getPosition().y
     );
 }
+
+std::string Button::GetType()
+{
+    return "Button";
+}
+
+Button* Button::GetComponent()
+{
+    return this;
+}

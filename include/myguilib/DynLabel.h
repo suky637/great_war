@@ -21,4 +21,6 @@ class DynLabel: public Component
     void Draw(sf::Font font) override;
     void Value(std::string value);
     //bool isHovered(sf::View* view) override;
+    std::string GetType() override;
+    DynLabel* GetComponent() override;
 };

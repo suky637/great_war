@@ -24,3 +24,13 @@ void DynLabel::Value(std::string value)
 {
     this->label.setString(value);
 }
+
+std::string DynLabel::GetType()
+{
+    return "DynLabel";
+}
+
+DynLabel* DynLabel::GetComponent()
+{
+    return this;
+}

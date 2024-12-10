@@ -27,3 +27,13 @@ bool Frame::isHovered(sf::View* view)
         posView.y > this->rect.getPosition().y
     );
 }
+
+std::string Frame::GetType()
+{
+    return "Frame";
+}
+
+Frame* Frame::GetComponent()
+{
+    return this;
+}
