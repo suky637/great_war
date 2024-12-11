@@ -1,10 +1,11 @@
 #include "myguilib/Button.h"
 
-Button::Button(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id)
+Button::Button(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id, bool visible)
 {
     this->win = win;
     this->position = pos;
     this->size = size;
+    this->visible = visible;
 
     this->rect.setSize(size);
     this->rect.setPosition(pos);

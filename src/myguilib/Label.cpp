@@ -1,8 +1,9 @@
 #include "myguilib/Label.h"
 
-Label::Label(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, int size, std::string text, std::string id)
+Label::Label(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, int size, std::string text, std::string id, bool visible)
 {
     this->win = win;
+    this->visible = visible;
     this->position = pos;
     this->label.setFont(gui.font);
     this->label.setString(text);

@@ -36,7 +36,8 @@ void GUI::Draw()
     window->setView(*gui_view);
     for (const auto& [k, comp] : components)
     {
-        comp->Draw(font);
+        if (comp->visible)
+            comp->Draw(font);
     }
     //std::cout << "Reached end!\n";
 }

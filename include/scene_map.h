@@ -28,6 +28,8 @@ class Europe: public Scene
 
     sf::RectangleShape background;
 
+    std::string currentCountry = "";
+
     // Rest
     bool hide_placeholder = false;
     std::vector<std::pair<sf::ConvexShape, sf::Text>> shapes{};

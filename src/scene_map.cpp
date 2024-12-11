@@ -20,13 +20,18 @@ void Europe::ReadGUIJson()
 
     for (auto element : dat.at("world_map_gui"))
     {
+        bool visible = true;
+        if (element.find("visible") != element.end())
+        {
+            visible = element["visible"];
+        }
         if (element["type"] == "FRAME")
         {
             sf::Vector2f position{element["position"][0], element["position"][1]};
             sf::Vector2f size{element["scale"][0], element["scale"][1]};
             std::string id = element["id"];
 
-            Frame{window, gui, position, size, id};
+            Frame{window, gui, position, size, id, visible};
         }
         else if (element["type"] == "BUTTON")
         {
@@ -35,7 +40,7 @@ void Europe::ReadGUIJson()
             sf::Vector2f position{element["position"][0], element["position"][1]};
             sf::Vector2f size{element["scale"][0], element["scale"][1]};
 
-            Button{window, gui, position, size, text, id};
+            Button{window, gui, position, size, text, id, visible};
         }
         else if (element["type"] == "LABEL")
         {
@@ -44,7 +49,7 @@ void Europe::ReadGUIJson()
             sf::Vector2f position{element["position"][0], element["position"][1]};
             int characterSize = element["scale"];
 
-            Label{window, gui, position, characterSize, text, id};
+            Label{window, gui, position, characterSize, text, id, visible};
         }
         else if (element["type"] == "DYN_LABEL")
         {
@@ -53,7 +58,7 @@ void Europe::ReadGUIJson()
             sf::Vector2f position{element["position"][0], element["position"][1]};
             int characterSize = element["scale"];
 
-            DynLabel{window, gui, position, characterSize, text, id};
+            DynLabel{window, gui, position, characterSize, text, id, visible};
         }
         else if (element["type"] == "IMAGEBOX")
         {
@@ -62,7 +67,7 @@ void Europe::ReadGUIJson()
             sf::Vector2f position{element["position"][0], element["position"][1]};
             sf::Vector2f scale{element["scale"][0], element["scale"][1]};
 
-            ImageBox{window, gui, position, scale, path, id};
+            ImageBox{window, gui, position, scale, path, id, visible};
         }
         else if (element["type"] == "DYN_IMAGEBOX")
         {
@@ -71,7 +76,7 @@ void Europe::ReadGUIJson()
             sf::Vector2f position{element["position"][0], element["position"][1]};
             sf::Vector2f scale{element["scale"][0], element["scale"][1]};
 
-            DynImageBox{window, gui, position, scale, path, id};
+            DynImageBox{window, gui, position, scale, path, id, visible};
         }
     }
 
@@ -88,6 +93,8 @@ Europe::Europe() : sceneName{"europe"}
     std::fstream f{game_json.at("worlds")[(int)(game_json["currentWorld"])]};
 
     data = json::parse(f);
+
+    currentCountry = "NONE";
 
 
     // Loading every countries
@@ -250,6 +257,19 @@ void Europe::Update()
                 preview_index = 0;
                 points.clear();
             }
+            for (const auto& [k, v] : gui->components)
+            {
+                if (k == "flags")
+                {
+                    if (v->GetType() != "DynImageBox")
+                        continue;
+                    DynImageBox* ima = (DynImageBox*)v->GetComponent();
+                    if ("ressources/flags/" + currentCountry + ".png" != ima->path)
+                    {
+                        ima->Value("ressources/flags/" + currentCountry + ".png");
+                    }
+                }
+            }
             gui_hovered = gui->hovered;
         }
         
@@ -278,7 +298,7 @@ void Europe::Update()
             {
                 // Getting the country from ISO code
                 std::string iso = shape.second.getString().toAnsiString().substr(0, shape.second.getString().toAnsiString().find_first_of('_'));
-                std::cout << isos.at(iso) << "\n";
+                currentCountry = iso;
             }
         }
     }

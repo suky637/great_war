@@ -1,8 +1,9 @@
 #include "myguilib/ImageBox.h"
 
-ImageBox::ImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id)
+ImageBox::ImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id, bool visible)
 {
     this->win = win;
+    this->visible = visible;
     this->position = pos;
     this->texture.loadFromFile(_path);
     this->rect.setSize(size);

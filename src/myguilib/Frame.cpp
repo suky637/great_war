@@ -1,8 +1,9 @@
 #include "myguilib/Frame.h"
 
-Frame::Frame(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string id)
+Frame::Frame(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string id, bool visible)
 {
     this->win = win;
+    this->visible = visible;
     this->position = pos;
     this->size = size;
     this->rect.setPosition(pos);

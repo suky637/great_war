@@ -1,8 +1,10 @@
 #include "myguilib/DynImageBox.h"
 
-DynImageBox::DynImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id)
+DynImageBox::DynImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id, bool visible)
 {
     this->win = win;
+    this->visible = visible;
+    this->path = _path;
     this->position = pos;
     this->texture.loadFromFile(_path);
     this->rect.setSize(size);
@@ -20,6 +22,7 @@ void DynImageBox::Draw(sf::Font font)
 
 void DynImageBox::Value(std::string path)
 {
+    this->path = path;
     this->texture.loadFromFile(path);
 }
 
