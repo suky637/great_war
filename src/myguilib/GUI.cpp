@@ -20,20 +20,20 @@ GUI* GUI::getScript()
     return this;
 }
 
-void GUI::Update(bool gui_hovered)
+void GUI::Update(GUI* gui)
 {
     this->hovered = false;
     for (const auto& [k, comp] : components)
     {
-        comp->Input(gui_view);
-        if (comp->isHovered(gui_view))
+        comp->Input(view);
+        if (comp->isHovered(view))
             this->hovered = true;
     }
 }
 
 void GUI::Draw()
 {
-    window->setView(*gui_view);
+    window->setView(*view);
     for (const auto& [k, comp] : components)
     {
         if (comp->visible)

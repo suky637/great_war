@@ -1,15 +1,5 @@
 #pragma once
-
-#include <iostream>
-#include <fstream>
-#include <nlohmann/json.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <map>
-
 #include "engine.h"
-#include "camera_movement.h"
 #include "myguilib.h"
 #include "Physics/PIP.h"
 
@@ -40,6 +30,8 @@ class Europe: public Scene
     json game_json;
 
     int preview_index = 0;
+
+    GUI gui;
 
     public:
     std::string sceneName;

@@ -1,5 +1,9 @@
 #include "scene_map.h"
 
+// scripts includes
+#include "camera_movement.h"
+#include "scripts/countryManager.h"
+
 void Europe::ReadGUIJson()
 {
     std::fstream f{game_json.at("guis")[(int)(game_json["currentGUI"])]};
@@ -13,9 +17,9 @@ void Europe::ReadGUIJson()
         exit(1);
     }
 
-    GUI gui = GUI{font};
+    gui = GUI{font};
     gui.window = window;
-    gui.gui_view = gui_view;
+    gui.view = gui_view;
 
 
     for (auto element : dat.at("world_map_gui"))
@@ -80,10 +84,10 @@ void Europe::ReadGUIJson()
         }
     }
 
-    scripts.push_back(std::make_unique<GUI>(std::move(gui)));
+    //scripts.push_back(std::make_unique<GUI>(std::move(gui)));
 }
 
-Europe::Europe() : sceneName{"europe"}
+Europe::Europe() : sceneName{"europe"}, gui{}
 {
     // Loading ressources
     std::fstream fgame{"ressources/game.json"};
@@ -151,6 +155,12 @@ void Europe::Start()
 
     background.setFillColor(sf::Color(data["config"]["backgroundColour"]["R"], data["config"]["backgroundColour"]["G"], data["config"]["backgroundColour"]["B"], data["config"]["backgroundColour"]["A"]));
     background.setSize(sf::Vector2f(1280, 720));
+
+    CountryManager countryManager{};
+    countryManager.view = view;
+    countryManager.window = window;
+    countryManager.Start();
+    scripts.push_back(std::make_unique<CountryManager>(std::move(countryManager)));
 }
 
 void Europe::Editor(bool gui_hovered)
@@ -233,50 +243,46 @@ void Europe::Editor(bool gui_hovered)
 
 void Europe::Update()
 {
-    static bool gui_hovered = false;
     static bool lastFocus = false;
     bool crntFocus = window->hasFocus();
 
+    gui.Update(&gui);
+
+    if (gui.isClicked("Create Code"))
+    {
+        std::cout << "GENERATED COORDINATES: \n";
+        for (auto point : points)
+        {
+            std::cout << "{\"X\": " << point.first.getPosition().x << ", \"Y\": " << point.first.getPosition().y << "},\n";
+        }
+    }
+    else if (gui.isClicked("Clear"))
+    {
+        preview.setPointCount(0);
+        preview_index = 0;
+        points.clear();
+    }
+    for (const auto& [k, v] : gui.components)
+    {
+        if (k == "flags")
+        {
+            if (v->GetType() != "DynImageBox")
+                continue;
+            DynImageBox* ima = (DynImageBox*)v->GetComponent();
+            if ("ressources/flags/" + currentCountry + ".png" != ima->path)
+            {
+                ima->Value("ressources/flags/" + currentCountry + ".png");
+            }
+        }
+    }
+    
+
     for (const auto& script : scripts)
     {
-
-        if (script->getId() == "GUI")
-        {
-            GUI* gui = (GUI*)script->getScript();
-            if (gui->isClicked("Create Code"))
-            {
-                std::cout << "GENERATED COORDINATES: \n";
-                for (auto point : points)
-                {
-                    std::cout << "{\"X\": " << point.first.getPosition().x << ", \"Y\": " << point.first.getPosition().y << "},\n";
-                }
-            }
-            else if (gui->isClicked("Clear"))
-            {
-                preview.setPointCount(0);
-                preview_index = 0;
-                points.clear();
-            }
-            for (const auto& [k, v] : gui->components)
-            {
-                if (k == "flags")
-                {
-                    if (v->GetType() != "DynImageBox")
-                        continue;
-                    DynImageBox* ima = (DynImageBox*)v->GetComponent();
-                    if ("ressources/flags/" + currentCountry + ".png" != ima->path)
-                    {
-                        ima->Value("ressources/flags/" + currentCountry + ".png");
-                    }
-                }
-            }
-            gui_hovered = gui->hovered;
-        }
-        
         if (!((!lastFocus && crntFocus) || !crntFocus)) {
             script->scroll = scroll;
             script->deltaTime = deltaTime;
-            script->Update(gui_hovered);
+            script->Update(&gui);
         }
     }
 
@@ -289,7 +295,7 @@ void Europe::Update()
 
         lastH = crntH;
 
-        this->Editor(gui_hovered);
+        this->Editor(gui.hovered);
 
         // just testing something
         for (auto shape : shapes)
@@ -341,4 +347,5 @@ void Europe::Draw()
     {
         script->Draw();
     }
+    gui.Draw();
 }

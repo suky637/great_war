@@ -5,7 +5,7 @@ void Script::Start()
 
 }
 
-void Script::Update(bool gui_hovered)
+void Script::Update(GUI* gui)
 {
 
 }

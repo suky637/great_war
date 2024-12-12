@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 
+#include "myguilib.h"
+
 #define FixedDeltaTime (1 / 60)
 
 class Script
@@ -12,9 +14,12 @@ class Script
     public:
     float deltaTime;
     int scroll;
+
+    sf::RenderWindow* window;
+    sf::View* view;
     
     virtual void Start();
-    virtual void Update(bool gui_hovered);
+    virtual void Update(GUI* gui);
     virtual void FixedUpdate();
     virtual void Draw();
     virtual std::string getId();

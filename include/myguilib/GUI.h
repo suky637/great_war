@@ -9,23 +9,26 @@
 #include <vector>
 #include <map>
 
-#include "engine.h"
 #include "myguilib/Component.h"
 
-class GUI: public Script
+
+class GUI
 {
     public:
+    float deltaTime;
+    int scroll;
+
+    sf::RenderWindow* window;
+    sf::View* view;
     sf::Font font;
     bool hovered;
     GUI();
     GUI(sf::Font& font);
-    sf::View* gui_view;
-    sf::RenderWindow* window;
     std::map<std::string, std::unique_ptr<Component>> components{};
-    void Update(bool gui_hovered) override;
-    void Draw() override;
+    void Update(GUI* gui);
+    void Draw();
     bool isClicked(std::string id);
-    std::string getId() override;
-    GUI* getScript() override;
+    std::string getId();
+    GUI* getScript();
 
 };

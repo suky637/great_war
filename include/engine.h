@@ -1,4 +1,11 @@
 #pragma once
+#include <iostream>
+#include <fstream>
+#include <nlohmann/json.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <vector>
+#include <map>
 #include "engine/Scene.h"
 #include "engine/Script.h"
 #include "engine/EngineFunctions.h"
