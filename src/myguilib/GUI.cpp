@@ -31,6 +31,11 @@ void GUI::Update(GUI* gui)
     }
 }
 
+bool GUI::Exist(std::string compId)
+{
+    return components.find(compId) != components.end();
+}
+
 void GUI::Draw()
 {
     window->setView(*view);

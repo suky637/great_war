@@ -6,6 +6,8 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <map>
+#include <string>
+#include "myguilib.h"
 #include "engine/Scene.h"
 #include "engine/Script.h"
 #include "engine/EngineFunctions.h"

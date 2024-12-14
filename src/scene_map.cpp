@@ -144,7 +144,7 @@ void Europe::Start()
     CameraMovement cameraMovement{};
     cameraMovement.view = view;
     cameraMovement.Start();
-    scripts.push_back(std::make_unique<CameraMovement>(std::move(cameraMovement)));
+    scripts.insert_or_assign("1", std::make_unique<CameraMovement>(std::move(cameraMovement)));
 
     europeReferenceMap.loadFromFile("ressources/image.png");
     referenceImageForEditor.setSize(sf::Vector2f(1280, 720));
@@ -160,7 +160,7 @@ void Europe::Start()
     countryManager.view = view;
     countryManager.window = window;
     countryManager.Start();
-    scripts.push_back(std::make_unique<CountryManager>(std::move(countryManager)));
+    scripts.insert_or_assign("countryManager", std::make_unique<CountryManager>(std::move(countryManager)));
 }
 
 void Europe::Editor(bool gui_hovered)
@@ -262,22 +262,9 @@ void Europe::Update()
         preview_index = 0;
         points.clear();
     }
-    for (const auto& [k, v] : gui.components)
-    {
-        if (k == "flags")
-        {
-            if (v->GetType() != "DynImageBox")
-                continue;
-            DynImageBox* ima = (DynImageBox*)v->GetComponent();
-            if ("ressources/flags/" + currentCountry + ".png" != ima->path)
-            {
-                ima->Value("ressources/flags/" + currentCountry + ".png");
-            }
-        }
-    }
     
 
-    for (const auto& script : scripts)
+    for (const auto& [k, script] : scripts)
     {
         if (!((!lastFocus && crntFocus) || !crntFocus)) {
             script->scroll = scroll;
@@ -304,7 +291,8 @@ void Europe::Update()
             {
                 // Getting the country from ISO code
                 std::string iso = shape.second.getString().toAnsiString().substr(0, shape.second.getString().toAnsiString().find_first_of('_'));
-                currentCountry = iso;
+                CountryManager* man = (CountryManager*)scripts.at("countryManager")->getScript();
+                man->selectedCountry = iso;
             }
         }
     }
@@ -313,7 +301,7 @@ void Europe::Update()
 
 void Europe::FixedUpdate()
 {
-    for (const auto& script : scripts)
+    for (const auto& [k, script] : scripts)
     {
         script->FixedUpdate();
     }
@@ -343,7 +331,7 @@ void Europe::Draw()
         this->window->draw(point.first);
     }
     //window->draw(test);
-    for (const auto& script : scripts)
+    for (const auto& [k, script] : scripts)
     {
         script->Draw();
     }

@@ -22,6 +22,7 @@ class GUI
     sf::View* view;
     sf::Font font;
     bool hovered;
+    bool Exist(std::string compId);
     GUI();
     GUI(sf::Font& font);
     std::map<std::string, std::unique_ptr<Component>> components{};

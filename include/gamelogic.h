@@ -10,6 +10,7 @@
 #include "engine.h"
 #include "scene_map.h"
 #include "engine.h"
+#include "mainmenu.h"
 
 using json = nlohmann::json;
 
@@ -25,6 +26,7 @@ class Game
     void AdjustViewport();
 
     public:
+    int currentScene = 0;
     int scroll;
     Game(sf::RenderWindow* window);
     void Begin();

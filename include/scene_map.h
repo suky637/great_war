@@ -23,7 +23,7 @@ class Europe: public Scene
     // Rest
     bool hide_placeholder = false;
     std::vector<std::pair<sf::ConvexShape, sf::Text>> shapes{};
-    std::vector<std::unique_ptr<Script>> scripts;
+    std::map<std::string, std::unique_ptr<Script>> scripts;
     std::map<std::string, std::string> isos{};
     sf::Font font;
     json data;

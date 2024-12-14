@@ -45,6 +45,13 @@ void Game::Begin()
     viewport = win->getView();
     gui_viewport = win->getView();
 
+    MainMenu mainMenu{};
+    mainMenu.window = win;
+    mainMenu.view = &viewport;
+    mainMenu.gui_view = &gui_viewport;
+    mainMenu.Start();
+    scenes.push_back(std::make_unique<MainMenu>(std::move(mainMenu)));
+
     Europe europe{};
     europe.window = win;
     europe.view = &viewport;
@@ -55,22 +62,17 @@ void Game::Begin()
 
 void Game::Update(float dt)
 {
-    for (const auto& scene : scenes)
-    {
-        scene->scroll = scroll;
-        scene->deltaTime = dt;
-        scene->Update();
-    }
+    scenes[currentScene]->scroll = scroll;
+    scenes[currentScene]->deltaTime = dt;
+    scenes[currentScene]->Update();
+
     sf::Vector2f mouseCoord = win->mapPixelToCoords(sf::Mouse::getPosition(*win), viewport);
 }
 
 void Game::FixedUpdate()
 {
     AdjustViewport();
-    for (const auto& scene : scenes)
-    {
-        scene->FixedUpdate();
-    }
+    scenes[currentScene]->FixedUpdate();
 }
 
 
@@ -81,8 +83,5 @@ void Game::Render()
 
     win->setView(viewport);
 
-    for (const auto& scene : scenes)
-    {
-        scene->Draw();
-    }
+    scenes[currentScene]->Draw();
 }
