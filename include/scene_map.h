@@ -40,6 +40,5 @@ class Europe: public Scene
     void Update() override;
     void FixedUpdate() override;
     void Draw() override;
-    void ReadGUIJson();
     void Editor(bool gui_hovered);
 };

@@ -6,7 +6,7 @@
 class MainMenu: public Scene
 {
     private:
-    
+    GUI gui;
     public:
     void Start() override;
     void Update() override;

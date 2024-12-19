@@ -1,6 +1,6 @@
 #include "myguilib/DynImageBox.h"
 
-DynImageBox::DynImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id, bool visible)
+DynImageBox::DynImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id, bool visible)
 {
     this->win = win;
     this->visible = visible;
@@ -11,7 +11,7 @@ DynImageBox::DynImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::
     this->rect.setPosition(pos);
     this->rect.setTexture(&texture);
 
-    gui.components.insert_or_assign(id == "" ? "image" : id, std::make_unique<DynImageBox>(*this));
+    gui->components.insert_or_assign(id == "" ? "image" : id, std::make_unique<DynImageBox>(*this));
 }
 
 void DynImageBox::Draw(sf::Font font)

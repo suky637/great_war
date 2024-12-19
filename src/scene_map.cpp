@@ -4,89 +4,6 @@
 #include "camera_movement.h"
 #include "scripts/countryManager.h"
 
-void Europe::ReadGUIJson()
-{
-    std::fstream f{game_json.at("guis")[(int)(game_json["currentGUI"])]};
-    json dat = json::parse(f);
-
-    std::cout << dat["world_map_gui_config"]["font"] << "\n";
-
-    if (!font.loadFromFile(dat["world_map_gui_config"]["font"]))
-    {
-        std::cerr << "Failed to load font\n";
-        exit(1);
-    }
-
-    gui = GUI{font};
-    gui.window = window;
-    gui.view = gui_view;
-
-
-    for (auto element : dat.at("world_map_gui"))
-    {
-        bool visible = true;
-        if (element.find("visible") != element.end())
-        {
-            visible = element["visible"];
-        }
-        if (element["type"] == "FRAME")
-        {
-            sf::Vector2f position{element["position"][0], element["position"][1]};
-            sf::Vector2f size{element["scale"][0], element["scale"][1]};
-            std::string id = element["id"];
-
-            Frame{window, gui, position, size, id, visible};
-        }
-        else if (element["type"] == "BUTTON")
-        {
-            std::string text = element["text"];
-            std::string id = element["id"];
-            sf::Vector2f position{element["position"][0], element["position"][1]};
-            sf::Vector2f size{element["scale"][0], element["scale"][1]};
-
-            Button{window, gui, position, size, text, id, visible};
-        }
-        else if (element["type"] == "LABEL")
-        {
-            std::string text = element["text"];
-            std::string id = element["id"];
-            sf::Vector2f position{element["position"][0], element["position"][1]};
-            int characterSize = element["scale"];
-
-            Label{window, gui, position, characterSize, text, id, visible};
-        }
-        else if (element["type"] == "DYN_LABEL")
-        {
-            std::string text = element["text"];
-            std::string id = element["id"];
-            sf::Vector2f position{element["position"][0], element["position"][1]};
-            int characterSize = element["scale"];
-
-            DynLabel{window, gui, position, characterSize, text, id, visible};
-        }
-        else if (element["type"] == "IMAGEBOX")
-        {
-            std::string path = element["path"];
-            std::string id = element["id"];
-            sf::Vector2f position{element["position"][0], element["position"][1]};
-            sf::Vector2f scale{element["scale"][0], element["scale"][1]};
-
-            ImageBox{window, gui, position, scale, path, id, visible};
-        }
-        else if (element["type"] == "DYN_IMAGEBOX")
-        {
-            std::string path = element["path"];
-            std::string id = element["id"];
-            sf::Vector2f position{element["position"][0], element["position"][1]};
-            sf::Vector2f scale{element["scale"][0], element["scale"][1]};
-
-            DynImageBox{window, gui, position, scale, path, id, visible};
-        }
-    }
-
-    //scripts.push_back(std::make_unique<GUI>(std::move(gui)));
-}
-
 Europe::Europe() : sceneName{"europe"}, gui{}
 {
     // Loading ressources
@@ -151,7 +68,10 @@ void Europe::Start()
     referenceImageForEditor.setTexture(&europeReferenceMap);
 
     preview.setFillColor(sf::Color(0, 255, 0, 100));
-    this->ReadGUIJson();
+    
+    gui.window = window;
+    gui.view = gui_view;
+    gui.getDataByJSON(game_json.at("guis")[(int)(game_json["currentGUI"])], "world_map_gui");
 
     background.setFillColor(sf::Color(data["config"]["backgroundColour"]["R"], data["config"]["backgroundColour"]["G"], data["config"]["backgroundColour"]["B"], data["config"]["backgroundColour"]["A"]));
     background.setSize(sf::Vector2f(1280, 720));

@@ -17,7 +17,7 @@ class Label: public Component
     private:
     sf::Text label;
     public:
-    Label(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, int size, std::string text, std::string id = "", bool visible = true);
+    Label(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, int size, std::string text, std::string id = "", bool visible = true);
     void Draw(sf::Font font) override;
     //bool isHovered(sf::View* view) override;
     std::string GetType() override;

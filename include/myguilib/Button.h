@@ -21,7 +21,7 @@ class Button: public Component
     bool lastClick = false;
     bool crntClicked = false;
     public:
-    Button(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id = "", bool visible = true);
+    Button(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id = "", bool visible = true);
     void Input(sf::View* view) override;
     void Draw(sf::Font font) override;
     bool isHovered(sf::View* view) override;

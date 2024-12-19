@@ -1,6 +1,6 @@
 #include "myguilib/Button.h"
 
-Button::Button(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id, bool visible)
+Button::Button(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id, bool visible)
 {
     this->win = win;
     this->position = pos;
@@ -11,7 +11,7 @@ Button::Button(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f s
     this->rect.setPosition(pos);
     this->rect.setFillColor(sf::Color(91, 91, 91));
 
-    this->label.setFont(gui.font);
+    this->label.setFont(gui->font);
     this->label.setString(text);
     this->label.setCharacterSize(64);
     float scaleMultiplicator = size.y / 66;
@@ -27,7 +27,7 @@ Button::Button(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f s
         position.y + (size.y / 2) - (textRect.height * scaleMultiplicator / 2 + 4 * (size.y / 20))
     );
     
-    gui.components.insert_or_assign(id == "" ? text : id, std::make_unique<Button>(*this));
+    gui->components.insert_or_assign(id == "" ? text : id, std::make_unique<Button>(*this));
 
     //1std::cout << "Created Button Sucessfuly!\n";
 }

@@ -23,4 +23,6 @@ class Component
     virtual void Draw(sf::Font font);
     virtual std::string GetType();
     virtual Component* GetComponent();
+    protected:
+    Component() = default;
 };

@@ -19,7 +19,7 @@ class DynImageBox: public Component
     sf::RectangleShape rect;
     public:
     std::string path;
-    DynImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id = "", bool visible = true);
+    DynImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id = "", bool visible = true);
     void Draw(sf::Font font) override;
     void Value(std::string path);
     std::string GetType() override;

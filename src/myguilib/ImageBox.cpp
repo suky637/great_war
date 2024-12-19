@@ -1,6 +1,6 @@
 #include "myguilib/ImageBox.h"
 
-ImageBox::ImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id, bool visible)
+ImageBox::ImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id, bool visible)
 {
     this->win = win;
     this->visible = visible;
@@ -10,7 +10,7 @@ ImageBox::ImageBox(sf::RenderWindow* win, GUI& gui, sf::Vector2f pos, sf::Vector
     this->rect.setPosition(pos);
     this->rect.setTexture(&texture);
 
-    gui.components.insert_or_assign(id == "" ? "image" : id, std::make_unique<ImageBox>(*this));
+    gui->components.insert_or_assign(id == "" ? "image" : id, std::make_unique<ImageBox>(*this));
 }
 
 void ImageBox::Draw(sf::Font font)
