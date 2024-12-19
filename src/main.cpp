@@ -5,7 +5,7 @@
 
 #define MAX_FPS 1.f / 60.f
 
-void doEvents(sf::RenderWindow* win, Game* game)
+void doEvents(sf::RenderWindow* win)
 {
     sf::Event event;
     while (win->pollEvent(event))
@@ -22,7 +22,7 @@ void doEvents(sf::RenderWindow* win, Game* game)
             if (event.mouseWheelScroll.wheel != sf::Mouse::VerticalWheel)
                 break;
             float delta = event.mouseWheelScroll.delta;
-            game->scroll = delta;
+            Game::instance.scroll = delta;
             break;
             }
          default:
@@ -37,9 +37,9 @@ int main(int, char**){
     sf::RenderWindow window{sf::VideoMode(1280, 720), "Window"};
     window.setVerticalSyncEnabled(false);
 
-    Game game{&window};
+    Game::instance = Game(&window);
 
-    game.Begin();
+    Game::instance.Begin();
     float lastTime = 0;
     float accumulation = 0;
     sf::Clock clock;
@@ -48,23 +48,23 @@ int main(int, char**){
     {
         float crntTime = clock.getElapsedTime().asSeconds(); 
         
-        doEvents(&window, &game);
+        doEvents(&window);
 
         float dt = crntTime - lastTime;
-        game.Update(dt);
+        Game::instance.Update(dt);
         accumulation += dt;
         while (accumulation >= MAX_FPS)
         {
             accumulation -= MAX_FPS;
-            game.FixedUpdate();
+            Game::instance.FixedUpdate();
         }
         
 
-        game.Render();
+        Game::instance.Render();
 
         window.display();
 
-        game.scroll = 0;
+        Game::instance.scroll = 0;
         lastTime = crntTime;
     }
 

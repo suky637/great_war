@@ -26,9 +26,12 @@ class Game
     void AdjustViewport();
 
     public:
-    int currentScene = 1;
+    static Game instance;
+    int currentScene = 0;
     int scroll;
+    Game();
     Game(sf::RenderWindow* window);
+    void ChangeScene(int scene);
     void Begin();
     void Update(float dt);
     void FixedUpdate();

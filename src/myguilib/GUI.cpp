@@ -58,12 +58,15 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
     std::fstream f{file};
     json dat = json::parse(f);
 
-    //std::cout << dat["world_map_gui_config"]["font"] << "\n";
-    if (!font.loadFromFile(dat[prefix + "_config"]["font"]))
+    std::cout << "Loading " << prefix << "\nLoading font... ";
+    std::string pref_config = prefix + std::string("_config");
+    if (!font.loadFromFile(dat[pref_config]["font"]))
     {
         std::cerr << "Failed to load font\n";
         exit(1);
     }
+    std::cout << "Done\nLoading GUI elements... ";
+
 
     for (auto element : dat.at(prefix))
     {
@@ -126,5 +129,6 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
             DynImageBox{window, this, position, scale, path, id, visible};
         }
     }
+    std::cout << "Done\n";
 }
 //template void GUI::AddComponent<DynImageBox>(sf::Vector2f, std::string, std::string, int, bool);

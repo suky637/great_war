@@ -5,6 +5,11 @@ Game::Game(sf::RenderWindow* window)
     this->win = window;
 }
 
+Game::Game()
+{
+
+}
+
 void Game::AdjustViewport()
 {
     uint32_t width = win->getSize().x;
@@ -49,15 +54,17 @@ void Game::Begin()
     mainMenu.window = win;
     mainMenu.view = &viewport;
     mainMenu.gui_view = &gui_viewport;
-    mainMenu.Start();
+    mainMenu.Awake();
     scenes.push_back(std::make_unique<MainMenu>(std::move(mainMenu)));
 
     Europe europe{};
     europe.window = win;
     europe.view = &viewport;
     europe.gui_view = &gui_viewport;
-    europe.Start();
+    europe.Awake();
     scenes.push_back(std::make_unique<Europe>(std::move(europe)));
+
+    scenes[currentScene]->Start();
 }
 
 void Game::Update(float dt)
@@ -85,3 +92,11 @@ void Game::Render()
 
     scenes[currentScene]->Draw();
 }
+
+void Game::ChangeScene(int scene)
+{
+    currentScene = scene;
+    scenes[currentScene]->Start();
+}
+
+Game Game::instance;

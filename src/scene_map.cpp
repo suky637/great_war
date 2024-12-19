@@ -4,8 +4,9 @@
 #include "camera_movement.h"
 #include "scripts/countryManager.h"
 
-Europe::Europe() : sceneName{"europe"}, gui{}
+void Europe::Awake()
 {
+    sceneName = "europe";
     // Loading ressources
     std::fstream fgame{"ressources/game.json"};
 
@@ -49,10 +50,7 @@ Europe::Europe() : sceneName{"europe"}, gui{}
             this->shapes.push_back(std::pair<sf::ConvexShape, sf::Text>(shape, txt));
         }
     }
-}
 
-void Europe::Start()
-{
     if (data["config"]["EDITOR_SNAPPING_ENABLED"])
     {
         std::cout << "WARNING: Snapping may cause some performance issues.\n";
@@ -81,6 +79,11 @@ void Europe::Start()
     countryManager.window = window;
     countryManager.Start();
     scripts.insert_or_assign("countryManager", std::make_unique<CountryManager>(std::move(countryManager)));
+}
+
+void Europe::Start()
+{
+
 }
 
 void Europe::Editor(bool gui_hovered)

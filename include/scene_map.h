@@ -35,7 +35,8 @@ class Europe: public Scene
 
     public:
     std::string sceneName;
-    Europe();
+    Europe() = default;
+    void Awake() override;
     void Start() override;
     void Update() override;
     void FixedUpdate() override;

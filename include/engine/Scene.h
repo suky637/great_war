@@ -17,8 +17,9 @@ class Scene
     std::string sceneName;
     int scroll;
     
-    virtual void Start();
-    virtual void Update();
-    virtual void FixedUpdate();
-    virtual void Draw();
+    virtual void Awake() = 0;
+    virtual void Start() = 0;
+    virtual void Update() = 0;
+    virtual void FixedUpdate() = 0;
+    virtual void Draw() = 0;
 };
