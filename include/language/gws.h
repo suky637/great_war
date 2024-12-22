@@ -16,7 +16,10 @@ Scripting language made by Suky Laplante
 #include "myguilib/GUI.h"
 
 enum GWS_EventTypes {
-    ON_CLICKED
+    ON_CLICKED,
+    UPDATE,
+    FIXED_UPDATE,
+    START
 };
 
 struct GWS_Event {
@@ -33,6 +36,7 @@ class GWS
     std::vector<std::string> tokens{};
     std::vector<GWS_Event> events{};
     std::vector<std::string> split(std::string& str, std::string delimiters, std::string usefulDel);
+    std::string pub_stdout = "";
     public:
     void interpret(std::string file);
     void runEvent(std::string id, GWS_EventTypes e, GUI* gui);

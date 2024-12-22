@@ -5,8 +5,6 @@
 
 class MainMenu: public Scene
 {
-    private:
-    GUI gui;
     public:
     MainMenu() = default;
     void Awake() override;

@@ -31,8 +31,6 @@ class Europe: public Scene
 
     int preview_index = 0;
 
-    GUI gui;
-
     public:
     std::string sceneName;
     Europe() = default;

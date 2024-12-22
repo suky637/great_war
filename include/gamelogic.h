@@ -15,6 +15,8 @@
 #include "engine.h"
 #include "mainmenu.h"
 
+#include "language/gws.h"
+
 using json = nlohmann::json;
 
 class Game
@@ -30,6 +32,7 @@ class Game
 
     public:
     static Game instance;
+    GWS gws;
     int currentScene = 0;
     int scroll;
     Game();

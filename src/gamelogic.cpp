@@ -50,6 +50,8 @@ void Game::Begin()
     viewport = win->getView();
     gui_viewport = win->getView();
 
+    gws.interpret(data["links"][0]);
+
     MainMenu mainMenu{};
     mainMenu.window = win;
     mainMenu.view = &viewport;
@@ -65,6 +67,7 @@ void Game::Begin()
     scenes.push_back(std::make_unique<Europe>(std::move(europe)));
 
     scenes[currentScene]->Start();
+    gws.runEvent(std::to_string(currentScene), GWS_EventTypes::START, &scenes[currentScene]->gui);
 }
 
 void Game::Update(float dt)
@@ -72,6 +75,8 @@ void Game::Update(float dt)
     scenes[currentScene]->scroll = scroll;
     scenes[currentScene]->deltaTime = dt;
     scenes[currentScene]->Update();
+    gws.runEvent(std::to_string(currentScene), GWS_EventTypes::UPDATE, &scenes[currentScene]->gui);
+
 
     sf::Vector2f mouseCoord = win->mapPixelToCoords(sf::Mouse::getPosition(*win), viewport);
 }
@@ -80,6 +85,7 @@ void Game::FixedUpdate()
 {
     AdjustViewport();
     scenes[currentScene]->FixedUpdate();
+    gws.runEvent(std::to_string(currentScene), GWS_EventTypes::FIXED_UPDATE, &scenes[currentScene]->gui);
 }
 
 
@@ -97,6 +103,7 @@ void Game::ChangeScene(int scene)
 {
     currentScene = scene;
     scenes[currentScene]->Start();
+    gws.runEvent(std::to_string(currentScene), GWS_EventTypes::START, &scenes[currentScene]->gui);
 }
 
 Game Game::instance;

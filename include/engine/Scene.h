@@ -4,12 +4,15 @@
 #include <string>
 #include <vector>
 #include <memory>
+#undef GUI
+#include "myguilib/GUI.h"
 
 #define FixedDeltaTime (1 / 60)
 
 class Scene
 {
     public:
+    GUI gui;
     sf::View* view;
     sf::View* gui_view;
     float deltaTime;
