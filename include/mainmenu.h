@@ -1,6 +1,6 @@
 #pragma once
 #include "engine.h"
-#include "myguilib.h"
+#include "myguilib/GUI.h"
 #include "Physics/PIP.h"
 
 class MainMenu: public Scene

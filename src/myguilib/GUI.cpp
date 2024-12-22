@@ -28,6 +28,10 @@ void GUI::Update(GUI* gui)
         comp->Input(view);
         if (comp->isHovered(view))
             this->hovered = true;
+        if (comp->GetType() == "Button") {
+            Button* btn = (Button*)comp->GetComponent();
+            btn->setGUI(gui);
+        }
     }
 }
 
@@ -89,8 +93,9 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
             std::string id = element["id"];
             sf::Vector2f position{element["position"][0], element["position"][1]};
             sf::Vector2f size{element["scale"][0], element["scale"][1]};
+            std::string linkScript = element.find("link") != element.end() ? element["link"] : "";
 
-            Button{window, this, position, size, text, id, visible};
+            Button{window, this, position, size, text, id, visible, linkScript};
         }
         else if (element["type"] == "LABEL")
         {

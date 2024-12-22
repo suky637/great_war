@@ -3,6 +3,7 @@
 // scripts includes
 #include "camera_movement.h"
 #include "scripts/countryManager.h"
+#include "engine/colour.h"
 
 void Europe::Awake()
 {
@@ -23,7 +24,7 @@ void Europe::Awake()
     for (auto country : data.at("countries"))
     {
         isos.insert_or_assign(country["ISO"], country["name"]);
-        std::cout << "Detected a country!, " << country.at("name") << "\n";
+        std::cout << TEXT_BLUE "Detected a country!, " << country.at("name") << RESET_COLOR << "\n";
         for (auto region : country.at("regions"))
         {
             sf::ConvexShape shape{};
@@ -46,14 +47,13 @@ void Europe::Awake()
             txt.setString(reg_name);
             txt.setPosition(sf::Vector2f(region["text_pos"]["X"], region["text_pos"]["Y"]));
             
-
             this->shapes.push_back(std::pair<sf::ConvexShape, sf::Text>(shape, txt));
         }
     }
 
     if (data["config"]["EDITOR_SNAPPING_ENABLED"])
     {
-        std::cout << "WARNING: Snapping may cause some performance issues.\n";
+        std::cout << TEXT_YELLOW "WARNING: Snapping may cause some performance issues.\n" RESET_COLOR;
     }
 
     CameraMovement cameraMovement{};

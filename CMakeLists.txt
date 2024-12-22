@@ -35,6 +35,7 @@ add_executable(ww1_game
     src/engine/Script.cpp
     src/Physics/PIP.cpp
     src/scripts/countryManager.cpp
+    src/language/gws.cpp
 )
 
 target_link_libraries(ww1_game sfml-audio sfml-graphics sfml-window sfml-system OpenAL nlohmann_json)

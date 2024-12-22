@@ -15,21 +15,11 @@ void MainMenu::Awake()
 
 void MainMenu::Start()
 {
-
 }
 
 void MainMenu::Update()
 {
     gui.Update(&gui);
-
-    if (gui.isClicked("Play"))
-    {
-        Game::instance.ChangeScene(1);
-    }
-    if (gui.isClicked("Quit"))
-    {
-        exit(0);
-    }
 }
 
 void MainMenu::FixedUpdate()

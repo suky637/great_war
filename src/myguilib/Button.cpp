@@ -1,11 +1,21 @@
 #include "myguilib/Button.h"
 
-Button::Button(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id, bool visible)
+Button::Button(
+    sf::RenderWindow* win, 
+    GUI* gui, 
+    sf::Vector2f pos, 
+    sf::Vector2f size, 
+    std::string text, 
+    std::string id, 
+    bool visible, 
+    std::string linkScript
+)
 {
     this->win = win;
     this->position = pos;
     this->size = size;
     this->visible = visible;
+    
 
     this->rect.setSize(size);
     this->rect.setPosition(pos);
@@ -27,9 +37,21 @@ Button::Button(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f s
         position.y + (size.y / 2) - (textRect.height * scaleMultiplicator / 2 + 4 * (size.y / 20))
     );
     
-    gui->components.insert_or_assign(id == "" ? text : id, std::make_unique<Button>(*this));
+    this->id = id == "" ? text : id;
 
     //1std::cout << "Created Button Sucessfuly!\n";
+    if (linkScript != "")
+    {
+        this->hasLinked = true;
+        //std::cout << "Linked the button [" << this->id << "] to " << linkScript << "!\n";
+        gws.interpret(linkScript);
+    }
+    gui->components.insert_or_assign(this->id, std::make_unique<Button>(*this));
+}
+
+void Button::setGUI(GUI* gui)
+{
+    this->gui = gui;
 }
 
 void Button::Input(sf::View* view)
@@ -52,6 +74,10 @@ void Button::Input(sf::View* view)
         if (!crntClicked && lastClick)
         {
             isClicked = true;
+            
+            if (hasLinked)
+                gws.runEvent(id, GWS_EventTypes::ON_CLICKED, gui);
+            
             lastClick = false;
         }
 

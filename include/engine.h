@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include <vector>
 #include <map>
 #include <string>

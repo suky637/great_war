@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "engine.h"
+#include "myguilib/GUI.h"
 
 class CameraMovement: public Script
 {

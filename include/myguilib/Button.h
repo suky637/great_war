@@ -10,8 +10,11 @@
 #include <vector>
 #include <map>
 
+#include "language/gws.h"
 #include "myguilib/Component.h"
 #include "myguilib/GUI.h"
+
+#include "language/gws.h"
 
 class Button: public Component
 {
@@ -20,8 +23,21 @@ class Button: public Component
     sf::RectangleShape rect{};
     bool lastClick = false;
     bool crntClicked = false;
+    bool hasLinked = false;
+    GUI* gui;
+    GWS gws{};
     public:
-    Button(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string text, std::string id = "", bool visible = true);
+    Button(
+        sf::RenderWindow* win, 
+        GUI* gui, 
+        sf::Vector2f pos, 
+        sf::Vector2f size, 
+        std::string text, 
+        std::string id = "", 
+        bool visible = true, 
+        std::string linkScript = ""
+    );
+    void setGUI(GUI* gui);
     void Input(sf::View* view) override;
     void Draw(sf::Font font) override;
     bool isHovered(sf::View* view) override;

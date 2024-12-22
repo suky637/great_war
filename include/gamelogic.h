@@ -5,9 +5,12 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <map>
+#include <vector>
 #include <memory>
 
-#include "engine.h"
+#include "engine/Scene.h"
+#include "engine/Script.h"
+#include "engine/EngineFunctions.h"
 #include "scene_map.h"
 #include "engine.h"
 #include "mainmenu.h"

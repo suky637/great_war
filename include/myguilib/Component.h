@@ -17,6 +17,7 @@ class Component
     sf::RenderWindow* win;
     sf::Vector2f position;
     sf::Vector2f size;
+    std::string id;
     bool visible = true;
     virtual void Input(sf::View* view);
     virtual bool isHovered(sf::View* view);
