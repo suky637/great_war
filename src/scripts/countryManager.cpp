@@ -25,21 +25,21 @@ void CountryManager::Update(GUI* gui)
     }
 
     // Select GUI
-    if (gui->Exist("Select Country") && selectedCountry != "" && !hasSelectedACountry)
+    if (gui->Exist("Select_Country") && selectedCountry != "" && !hasSelectedACountry)
     {
-        gui->components.at("Select Country")->visible = true;
-        if (gui->components.at("Select Country")->isClicked)
+        gui->components.at("Select_Country")->visible = true;
+        if (gui->components.at("Select_Country")->isClicked)
         {
             hasSelectedACountry = true;
             currentCountry = selectedCountry;
             if (gui->Exist("selectFlag"))
                 gui->components.at("selectFlag")->visible = true;
-            gui->components.at("Select Country")->visible = false;
+            gui->components.at("Select_Country")->visible = false;
         }
     }
     else
     {
-        gui->components.at("Select Country")->visible = false;
+        gui->components.at("Select_Country")->visible = false;
     }
 }
 
