@@ -59,7 +59,7 @@ void Button::Input(sf::View* view)
     isClicked = false;
     // Checking if hovering
 
-    if (this->isHovered(view))
+    if (this->isHovered(view) && this->visible)
     {
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
