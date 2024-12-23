@@ -37,6 +37,7 @@ class Button: public Component
         bool visible = true, 
         std::string linkScript = ""
     );
+    void forceEvent();
     void setGUI(GUI* gui);
     void Input(sf::View* view) override;
     void Draw(sf::Font font) override;

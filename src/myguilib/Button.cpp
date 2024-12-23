@@ -88,6 +88,11 @@ void Button::Input(sf::View* view)
     
 }
 
+void Button::forceEvent() {
+    if (hasLinked)
+        gws.runEvent(id, GWS_EventTypes::ON_CLICKED, gui);
+}
+
 void Button::Draw(sf::Font font)
 {
     //std::cout << "DRAW\n";

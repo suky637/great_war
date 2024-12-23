@@ -171,7 +171,7 @@ void GWS::runEvent(std::string id, GWS_EventTypes e, GUI* gui) {
         }
         else if (tokens.at(i) == "Wcall") {
             if (tokens.at(i+1) == "Wexit") {
-                exit(0);
+                Game::instance.Exit();
             }
             if (tokens.at(i+1) == "Wprint") {
                 std::cout << pub_stdout;

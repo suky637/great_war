@@ -22,6 +22,7 @@ add_executable(ww1_game
     src/scene_map.cpp
     src/camera_movement.cpp
     src/mainmenu.cpp
+    src/choose_save.cpp
     src/myguilib/Button.cpp
     src/myguilib/Component.cpp
     src/myguilib/Frame.cpp

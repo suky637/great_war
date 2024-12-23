@@ -32,6 +32,12 @@ class Game
 
     public:
     static Game instance;
+
+    std::string save_file;
+    json currentSave;
+
+    std::string currentCountry;
+
     GWS gws;
     int currentScene = 0;
     int scroll;
@@ -42,4 +48,5 @@ class Game
     void Update(float dt);
     void FixedUpdate();
     void Render();
+    void Exit();
 };

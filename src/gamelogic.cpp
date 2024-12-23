@@ -1,4 +1,6 @@
 #include "gamelogic.h"
+#include "choose_save.h"
+#include "engine/colour.h"
 
 Game::Game(sf::RenderWindow* window)
 {
@@ -59,6 +61,13 @@ void Game::Begin()
     mainMenu.Awake();
     scenes.push_back(std::make_unique<MainMenu>(std::move(mainMenu)));
 
+    ChooseSave chooseSave{};
+    chooseSave.window = win;
+    chooseSave.view = &viewport;
+    chooseSave.gui_view = &gui_viewport;
+    chooseSave.Awake();
+    scenes.push_back(std::make_unique<ChooseSave>(std::move(chooseSave)));
+
     Europe europe{};
     europe.window = win;
     europe.view = &viewport;
@@ -104,6 +113,21 @@ void Game::ChangeScene(int scene)
     currentScene = scene;
     scenes[currentScene]->Start();
     gws.runEvent(std::to_string(currentScene), GWS_EventTypes::START, &scenes[currentScene]->gui);
+}
+
+void Game::Exit() {
+    // Saving happens here
+    if (this->save_file != "") {
+        std::string s = this->currentSave.dump();
+
+        std::ofstream __file(this->save_file, std::ios::out);
+        __file << s;
+        __file.close();
+
+        std::cout << "Wrote data sucessfuly to " << TEXT_GREEN << this->save_file << RESET_COLOR << "\n";
+    }
+
+    exit(0);
 }
 
 Game Game::instance;

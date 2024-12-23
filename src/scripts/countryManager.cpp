@@ -1,12 +1,23 @@
 #include "scripts/countryManager.h"
+#include "gamelogic.h"
 
 void CountryManager::Start()
 {
-
 }
 
 void CountryManager::Update(GUI* gui)
 {
+    if (Game::instance.currentCountry != "" && !hasSelectedACountry) {
+        std::cout << Game::instance.currentCountry << "\n";
+        hasSelectedACountry = true;
+        DynImageBox* ima = (DynImageBox*)gui->components["flags"]->GetComponent();
+        if ("ressources/flags/" + Game::instance.currentCountry + ".png" != ima->path)
+        {
+            ima->Value("ressources/flags/" + Game::instance.currentCountry + ".png");
+        }
+        Button* button = (Button*)gui->components["Select_Country"]->GetComponent();
+        button->forceEvent();
+    }
     if (gui->Exist("flags") && !hasSelectedACountry)
     {
         DynImageBox* ima = (DynImageBox*)gui->components["flags"]->GetComponent();
@@ -31,7 +42,8 @@ void CountryManager::Update(GUI* gui)
         if (gui->components.at("Select_Country")->isClicked)
         {
             hasSelectedACountry = true;
-            currentCountry = selectedCountry;
+            Game::instance.currentCountry = selectedCountry;
+            Game::instance.currentSave["country"] = Game::instance.currentCountry;
             if (gui->Exist("selectFlag"))
                 gui->components.at("selectFlag")->visible = true;
             gui->components.at("Select_Country")->visible = false;

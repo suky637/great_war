@@ -68,8 +68,8 @@ int main(int, char**){
         lastTime = crntTime;
     }
 
-    
-
+    // Saving everything :)
+    Game::instance.Exit();
 
     return 0;
 }
