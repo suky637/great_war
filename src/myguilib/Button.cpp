@@ -1,4 +1,5 @@
 #include "myguilib/Button.h"
+#include "engine/string_manip.h"
 
 Button::Button(
     sf::RenderWindow* win, 
@@ -22,7 +23,7 @@ Button::Button(
     this->rect.setFillColor(sf::Color(91, 91, 91));
 
     this->label.setFont(gui->font);
-    this->label.setString(text);
+    this->label.setString(sf::String(utf8ToUtf32(text)));
     this->label.setCharacterSize(64);
     float scaleMultiplicator = size.y / 66;
     this->label.setScale(sf::Vector2f(scaleMultiplicator, scaleMultiplicator));
@@ -82,9 +83,11 @@ void Button::Input(sf::View* view)
         }
 
         rect.setFillColor(sf::Color(81, 81, 81));
+        rect.setOutlineThickness(1);
         return;
     }
     rect.setFillColor(sf::Color(91, 91, 91));
+    rect.setOutlineThickness(0);
     
 }
 

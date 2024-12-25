@@ -1,4 +1,5 @@
 #include "myguilib/DynLabel.h"
+#include "engine/string_manip.h"
 
 DynLabel::DynLabel(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, int size, std::string text, std::string id, bool visible)
 {
@@ -6,7 +7,7 @@ DynLabel::DynLabel(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, int size, 
     this->visible = visible;
     this->position = pos;
     this->label.setFont(gui->font);
-    this->label.setString(text);
+    this->label.setString(sf::String(utf8ToUtf32(text)));
     this->label.setCharacterSize(size);
     this->label.setPosition(pos);
     this->label.setFillColor(sf::Color::White);
@@ -23,7 +24,7 @@ void DynLabel::Draw(sf::Font font)
 
 void DynLabel::Value(std::string value)
 {
-    this->label.setString(value);
+    this->label.setString(sf::String(utf8ToUtf32(value)));
 }
 
 std::string DynLabel::GetType()

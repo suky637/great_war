@@ -35,6 +35,7 @@ add_executable(ww1_game
     src/engine/Scene.cpp
     src/engine/Script.cpp
     src/engine/time_manager.cpp
+    src/engine/string_manip.cpp
     src/Physics/PIP.cpp
     src/scripts/countryManager.cpp
     src/language/gws.cpp

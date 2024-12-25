@@ -1,4 +1,5 @@
 #include "myguilib/Label.h"
+#include "engine/string_manip.h"
 
 Label::Label(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, int size, std::string text, std::string id, bool visible)
 {
@@ -6,7 +7,7 @@ Label::Label(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, int size, std::s
     this->visible = visible;
     this->position = pos;
     this->label.setFont(gui->font);
-    this->label.setString(text);
+    this->label.setString(sf::String(utf8ToUtf32(text)));
     this->label.setCharacterSize(size);
     this->label.setPosition(pos);
     this->label.setFillColor(sf::Color::White);

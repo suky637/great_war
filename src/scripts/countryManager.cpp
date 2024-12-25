@@ -8,7 +8,6 @@ void CountryManager::Start()
 void CountryManager::Update(GUI* gui)
 {
     if (Game::instance.currentCountry != "" && !hasSelectedACountry) {
-        std::cout << Game::instance.currentCountry << "\n";
         hasSelectedACountry = true;
         DynImageBox* ima = (DynImageBox*)gui->components["flags"]->GetComponent();
         if ("ressources/flags/" + Game::instance.currentCountry + ".png" != ima->path)
@@ -17,6 +16,8 @@ void CountryManager::Update(GUI* gui)
         }
         Button* button = (Button*)gui->components["Select_Country"]->GetComponent();
         button->forceEvent();
+        if (gui->Exist("selectFlag"))
+            gui->components.at("selectFlag")->visible = true;
     }
     if (gui->Exist("flags") && !hasSelectedACountry)
     {

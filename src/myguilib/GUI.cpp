@@ -71,10 +71,23 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
     }
     std::cout << "Done\nLoading GUI elements... ";
 
+    // loading the current translations
+    std::fstream fgame{"ressources/game.json"};
+    json datGame = json::parse(fgame);
+
+    // Getting the language file
+    std::fstream flang{datGame["languages"][datGame["currentLanguage"]]};
+    json datLang = json::parse(flang).at(prefix);
 
     for (auto element : dat.at(prefix))
     {
         bool visible = true;
+        std::string translated = "";
+        std::string id = element["id"];
+        if (datLang.find(id) != datLang.end()) {
+            translated = datLang[id];
+        }
+
         if (element.find("visible") != element.end())
         {
             visible = element["visible"];
@@ -95,7 +108,7 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
             sf::Vector2f size{element["scale"][0], element["scale"][1]};
             std::string linkScript = element.find("link") != element.end() ? element["link"] : "";
 
-            Button{window, this, position, size, text, id, visible, linkScript};
+            Button{window, this, position, size, translated != "" ? translated : text, id, visible, linkScript};
         }
         else if (element["type"] == "LABEL")
         {
@@ -104,7 +117,7 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
             sf::Vector2f position{element["position"][0], element["position"][1]};
             int characterSize = element["scale"];
 
-            Label{window, this, position, characterSize, text, id, visible};
+            Label{window, this, position, characterSize, translated != "" ? translated : text, id, visible};
         }
         else if (element["type"] == "DYN_LABEL")
         {
@@ -113,7 +126,7 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
             sf::Vector2f position{element["position"][0], element["position"][1]};
             int characterSize = element["scale"];
 
-            DynLabel{window, this, position, characterSize, text, id, visible};
+            DynLabel{window, this, position, characterSize, translated != "" ? translated : text, id, visible};
         }
         else if (element["type"] == "IMAGEBOX")
         {
