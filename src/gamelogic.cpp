@@ -1,5 +1,6 @@
 #include "gamelogic.h"
 #include "choose_save.h"
+#include "settings_scene.h"
 #include "engine/colour.h"
 
 Game::Game(sf::RenderWindow* window)
@@ -68,12 +69,20 @@ void Game::Begin()
     chooseSave.Awake();
     scenes.push_back(std::make_unique<ChooseSave>(std::move(chooseSave)));
 
+    Settings_Scene settingsScene{};
+    settingsScene.window = win;
+    settingsScene.view = &viewport;
+    settingsScene.gui_view = &gui_viewport;
+    settingsScene.Awake();
+    scenes.push_back(std::make_unique<Settings_Scene>(std::move(settingsScene)));
+
     Europe europe{};
     europe.window = win;
     europe.view = &viewport;
     europe.gui_view = &gui_viewport;
     europe.Awake();
     scenes.push_back(std::make_unique<Europe>(std::move(europe)));
+
 
     scenes[currentScene]->Start();
     gws.runEvent(std::to_string(currentScene), GWS_EventTypes::START, &scenes[currentScene]->gui);
