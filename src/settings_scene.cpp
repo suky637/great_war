@@ -52,3 +52,5 @@ void Settings_Scene::FixedUpdate() {
 void Settings_Scene::Draw() {
     gui.Draw();
 }
+
+Settings_Scene Settings_Scene::instance;

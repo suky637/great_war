@@ -7,6 +7,7 @@ class ChooseSave: public Scene
 {
     public:
     ChooseSave() = default;
+    static ChooseSave instance;
     void createData();
     void loadData();
     void Awake() override;

@@ -5,6 +5,7 @@
 
 class Settings_Scene: public Scene {
     public:
+    static Settings_Scene instance;
     Settings_Scene() = default;
     void Awake() override;
     void Start() override;

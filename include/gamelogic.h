@@ -26,11 +26,11 @@ class Game
     sf::View viewport;
     sf::View gui_viewport;
     sf::View defaultWindow;
-    std::vector<std::unique_ptr<Scene>> scenes{};
 
     void AdjustViewport();
 
     public:
+    std::vector<Scene*> scenes{};
     static Game instance;
 
     std::string save_file;

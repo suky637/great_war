@@ -31,3 +31,5 @@ void MainMenu::Draw()
 {
     gui.Draw();
 }
+
+MainMenu MainMenu::instance;

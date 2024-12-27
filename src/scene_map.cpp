@@ -23,8 +23,10 @@ void Europe::Awake()
     // Loading every countries
     for (auto country : data.at("countries"))
     {
-        isos.insert_or_assign(country["ISO"], country["name"]);
-        std::cout << TEXT_BLUE "Detected a country!, " << country.at("name") << RESET_COLOR << "\n";
+        std::string iso = country["ISO"];
+        isos.insert_or_assign(iso, country["name"]);
+        colours_iso.insert_or_assign(iso, sf::Color(country.at("colour")["R"], country.at("colour")["G"], country.at("colour")["B"], data["config"]["countryOpacity"]));
+        std::cout << TEXT_BLUE "Detected a country!, " << country.at("name") << "[" << country["ISO"] << "]" << RESET_COLOR << "\n";
         for (auto region : country.at("regions"))
         {
             sf::ConvexShape shape{};
@@ -47,9 +49,11 @@ void Europe::Awake()
             txt.setString(reg_name);
             txt.setPosition(sf::Vector2f(region["text_pos"]["X"], region["text_pos"]["Y"]));
             
-            this->shapes.push_back(std::pair<sf::ConvexShape, sf::Text>(shape, txt));
+            this->shapes.push_back({shape, iso, reg_name, txt}); // [own] [rest]
         }
     }
+
+    std::cout << "ISO (std::map<std::string, std::string>) size = " << isos.size() << "\n";
 
     if (data["config"]["EDITOR_SNAPPING_ENABLED"])
     {
@@ -125,9 +129,9 @@ void Europe::Editor(bool gui_hovered)
                 sf::Vector2f pointA = mousePos;
                 for (const auto& shape : shapes)
                 {
-                    for (int i = 0; i < shape.first.getPointCount(); ++i)
+                    for (int i = 0; i < shape.shape.getPointCount(); ++i)
                     {
-                        sf::Vector2f pointB = shape.first.getPoint(i);
+                        sf::Vector2f pointB = shape.shape.getPoint(i);
                         float distance = sqrt((pointA.x-pointB.x)*(pointA.x-pointB.x) + (pointA.y-pointB.y)*(pointA.y-pointB.y));
                         if (distance <= data["config"]["EDITOR_SNAPPING"])
                         {
@@ -210,10 +214,10 @@ void Europe::Update()
         // just testing something
         for (auto shape : shapes)
         {
-            if (Physics::PIP_Collision(shape.first, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+            if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
             {
                 // Getting the country from ISO code
-                std::string iso = shape.second.getString().toAnsiString().substr(0, shape.second.getString().toAnsiString().find_first_of('_'));
+                std::string iso = shape.text.getString().toAnsiString().substr(0, shape.text.getString().toAnsiString().find_first_of('_'));
                 CountryManager* man = (CountryManager*)scripts.at("countryManager")->getScript();
                 man->selectedCountry = iso;
             }
@@ -241,9 +245,10 @@ void Europe::Draw()
     }
     for (auto shape : shapes)
     {
-        this->window->draw(shape.first);
-        shape.second.setFont(font);
-        this->window->draw(shape.second);
+        shape.shape.setFillColor(colours_iso[shape.owner]);
+        this->window->draw(shape.shape);
+        shape.text.setFont(font);
+        this->window->draw(shape.text);
     }
     if (preview.getPointCount() >= 3)
         this->window->draw(preview);
@@ -260,3 +265,5 @@ void Europe::Draw()
     }
     gui.Draw();
 }
+
+Europe Europe::instance;

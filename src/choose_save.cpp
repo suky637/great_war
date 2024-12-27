@@ -1,6 +1,8 @@
 #include "choose_save.h"
 #include <filesystem>
 #include "gamelogic.h"
+#include "scene_map.h"
+#include "engine/colour.h"
 
 #define saves 2
 
@@ -52,11 +54,47 @@ void ChooseSave::loadData() {
     if (save["reset"] == true) {
         save["reset"] = false;
         save["country"] = "NONE";
-        save["money"] = "1";
-        save["stability"] = "100";
+        save["countries"] = json::object();
+        std::cout << "(choose_save.cpp / line 58) Europe's ISOs = " << Europe::instance.isos.size() << "\n";
+        for (const auto& [k, v] : Europe::instance.isos) {
+            json item = {
+                {"money", 10},
+                {"stability", 60},
+                {"territories", json::array()}
+            };
+            // Horrible but works
+            for (const auto& region : Europe::instance.shapes) {
+                if (k == region.owner) {
+                    item["territories"].push_back(region.region_name);
+                }
+            }
+            save["countries"][k] = item;
+        }
     }
     else {
         Game::instance.currentCountry = save["country"];
+        /*
+            Loading country data
+        */
+
+        // Goodluck fixing performance issues later for loading data
+        for (auto& country : save["countries"].items()) {
+            for (auto& territory : country.value().at("territories")) {
+                for (int i = 0; i < Europe::instance.shapes.size(); ++i) {
+                    if (Europe::instance.shapes[i].region_name == territory) {
+                        Europe::instance.shapes[i].owner = country.key();
+                    }
+                }
+            }
+        }
+
+        /*
+            Loading client side stuff
+        */
+        if (save["country"] != "NONE") {
+            Europe::instance.client_money = save["countries"][save["country"]]["money"];
+            Europe::instance.client_stability = save["countries"][save["country"]]["stability"];
+        }
     }
 }
 
@@ -95,3 +133,5 @@ void ChooseSave::FixedUpdate() {
 void ChooseSave::Draw() {
     gui.Draw();
 }
+
+ChooseSave ChooseSave::instance;

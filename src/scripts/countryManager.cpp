@@ -7,7 +7,7 @@ void CountryManager::Start()
 
 void CountryManager::Update(GUI* gui)
 {
-    if (Game::instance.currentCountry != "" && !hasSelectedACountry) {
+    if (Game::instance.currentCountry != "" && !hasSelectedACountry && Game::instance.currentCountry != "NONE") {
         hasSelectedACountry = true;
         DynImageBox* ima = (DynImageBox*)gui->components["flags"]->GetComponent();
         if ("ressources/flags/" + Game::instance.currentCountry + ".png" != ima->path)

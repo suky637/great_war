@@ -55,33 +55,29 @@ void Game::Begin()
 
     gws.interpret(data["links"][0]);
 
-    MainMenu mainMenu{};
-    mainMenu.window = win;
-    mainMenu.view = &viewport;
-    mainMenu.gui_view = &gui_viewport;
-    mainMenu.Awake();
-    scenes.push_back(std::make_unique<MainMenu>(std::move(mainMenu)));
+    MainMenu::instance.window = win;
+    MainMenu::instance.view = &viewport;
+    MainMenu::instance.gui_view = &gui_viewport;
+    MainMenu::instance.Awake();
+    scenes.push_back(&MainMenu::instance);
 
-    ChooseSave chooseSave{};
-    chooseSave.window = win;
-    chooseSave.view = &viewport;
-    chooseSave.gui_view = &gui_viewport;
-    chooseSave.Awake();
-    scenes.push_back(std::make_unique<ChooseSave>(std::move(chooseSave)));
+    ChooseSave::instance.window = win;
+    ChooseSave::instance.view = &viewport;
+    ChooseSave::instance.gui_view = &gui_viewport;
+    ChooseSave::instance.Awake();
+    scenes.push_back(&ChooseSave::instance);
 
-    Settings_Scene settingsScene{};
-    settingsScene.window = win;
-    settingsScene.view = &viewport;
-    settingsScene.gui_view = &gui_viewport;
-    settingsScene.Awake();
-    scenes.push_back(std::make_unique<Settings_Scene>(std::move(settingsScene)));
+    Settings_Scene::instance.window = win;
+    Settings_Scene::instance.view = &viewport;
+    Settings_Scene::instance.gui_view = &gui_viewport;
+    Settings_Scene::instance.Awake();
+    scenes.push_back(&Settings_Scene::instance);
 
-    Europe europe{};
-    europe.window = win;
-    europe.view = &viewport;
-    europe.gui_view = &gui_viewport;
-    europe.Awake();
-    scenes.push_back(std::make_unique<Europe>(std::move(europe)));
+    Europe::instance.window = win;
+    Europe::instance.view = &viewport;
+    Europe::instance.gui_view = &gui_viewport;
+    Europe::instance.Awake();
+    scenes.push_back(&Europe::instance);
 
 
     scenes[currentScene]->Start();

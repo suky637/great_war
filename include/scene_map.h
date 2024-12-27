@@ -5,6 +5,13 @@
 
 using json = nlohmann::json;
 
+struct Country {
+    sf::ConvexShape shape;
+    std::string owner;
+    std::string region_name;
+    sf::Text text;
+};
+
 class Europe: public Scene
 {
     private:
@@ -14,6 +21,7 @@ class Europe: public Scene
     sf::Texture europeReferenceMap;
 
     std::vector<std::pair<sf::Text, sf::CircleShape>> points{};
+    std::map<std::string, sf::Color> colours_iso{};
     sf::ConvexShape preview;
 
     sf::RectangleShape background;
@@ -22,9 +30,7 @@ class Europe: public Scene
 
     // Rest
     bool hide_placeholder = false;
-    std::vector<std::pair<sf::ConvexShape, sf::Text>> shapes{};
     std::map<std::string, std::unique_ptr<Script>> scripts;
-    std::map<std::string, std::string> isos{};
     sf::Font font;
     json data;
     json game_json;
@@ -32,7 +38,33 @@ class Europe: public Scene
     int preview_index = 0;
 
     public:
+
+    /*
+     ██████╗██╗     ██╗███████╗███╗   ██╗████████╗     ██████╗ ██╗      ██████╗ ██████╗  █████╗ ██╗     ███████╗
+    ██╔════╝██║     ██║██╔════╝████╗  ██║╚══██╔══╝    ██╔════╝ ██║     ██╔═══██╗██╔══██╗██╔══██╗██║     ██╔════╝
+    ██║     ██║     ██║█████╗  ██╔██╗ ██║   ██║       ██║  ███╗██║     ██║   ██║██████╔╝███████║██║     ███████╗
+    ██║     ██║     ██║██╔══╝  ██║╚██╗██║   ██║       ██║   ██║██║     ██║   ██║██╔══██╗██╔══██║██║     ╚════██║
+    ╚██████╗███████╗██║███████╗██║ ╚████║   ██║       ╚██████╔╝███████╗╚██████╔╝██████╔╝██║  ██║███████╗███████║
+    ╚═════╝╚══════╝╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝        ╚═════╝ ╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝
+    */
+
+    int client_money = 10;
+    int client_stability = 60;
+
+
+    /*
+    ██████╗ ███████╗███████╗████████╗
+    ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
+    ██████╔╝█████╗  ███████╗   ██║   
+    ██╔══██╗██╔══╝  ╚════██║   ██║   
+    ██║  ██║███████╗███████║   ██║   
+    ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝  
+    */
+
+    std::vector<Country> shapes{};
+    std::map<std::string, std::string> isos{};
     std::string sceneName;
+    static Europe instance;
     Europe() = default;
     void Awake() override;
     void Start() override;

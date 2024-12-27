@@ -2,6 +2,19 @@
     [ ] finish map-making
 [*] Map Editor
 [+] GUI
+    [*] GUI Editor
+    [ ] Finished Front-end
+[*] Translations
+[+] Interpreter
+[*] Collision system
+[ ] Saving
+    [!] Saving all countries
+[ ] Economy
+[ ] Politics
+[ ] Stability points
+[ ] World News
+[ ] Adding troops
 [ ] Battle Simulation
 [ ] Gun modification
 [ ] Research Tree
+[*] Fixed bug with NONE (saving without selecting a country, then reloading makes it like you were playing as NONE)

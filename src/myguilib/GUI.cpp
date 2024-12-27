@@ -1,4 +1,5 @@
 #include "myguilib.h"
+#include "engine/colour.h"
 
 GUI::GUI()
 {
@@ -62,7 +63,7 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
     std::fstream f{file};
     json dat = json::parse(f);
 
-    std::cout << "Loading " << prefix << "\nLoading font... ";
+    std::cout << TEXT_BOLD << "Loading " << prefix << RESET_COLOR << "\nLoading font... ";
     std::string pref_config = prefix + std::string("_config");
     if (!font.loadFromFile(dat[pref_config]["font"]))
     {

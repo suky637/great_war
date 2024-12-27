@@ -6,6 +6,7 @@
 class MainMenu: public Scene
 {
     public:
+    static MainMenu instance;
     MainMenu() = default;
     void Awake() override;
     void Start() override;
