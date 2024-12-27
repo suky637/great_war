@@ -87,7 +87,14 @@ void Europe::Awake()
 
 void Europe::Start()
 {
-
+    if (gui.Exist("stab")) {
+        DynLabel* label = (DynLabel*)gui.components.at("stab")->GetComponent();
+        label->Value(std::to_string(client_stability) + "%");
+    }
+    if (gui.Exist("money")) {
+        DynLabel* label = (DynLabel*)gui.components.at("money")->GetComponent();
+        label->Value(std::to_string(client_money) + "M$");
+    }
 }
 
 void Europe::Editor(bool gui_hovered)
@@ -212,14 +219,23 @@ void Europe::Update()
         this->Editor(gui.hovered);
 
         // just testing something
-        for (auto shape : shapes)
-        {
-            if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)) && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+            bool collision = false;
+            for (auto shape : shapes)
             {
-                // Getting the country from ISO code
-                std::string iso = shape.text.getString().toAnsiString().substr(0, shape.text.getString().toAnsiString().find_first_of('_'));
+                if (gui.hovered) {collision = true; break; }
+                if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
+                {
+                    // Getting the country from ISO code
+                    std::string iso = shape.owner;
+                    CountryManager* man = (CountryManager*)scripts.at("countryManager")->getScript();
+                    man->selectedCountry = iso;
+                    collision = true;
+                }
+            }
+            if (!collision) {
                 CountryManager* man = (CountryManager*)scripts.at("countryManager")->getScript();
-                man->selectedCountry = iso;
+                man->selectedCountry = "NONE";
             }
         }
     }

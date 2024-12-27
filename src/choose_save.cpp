@@ -60,8 +60,12 @@ void ChooseSave::loadData() {
             json item = {
                 {"money", 10},
                 {"stability", 60},
-                {"territories", json::array()}
+                {"territories", json::array()},
+                {"likeness", json::object()}
             };
+            for (const auto& [k2, v2] : Europe::instance.isos) {
+                item["likeness"][k2] = 100;
+            }
             // Horrible but works
             for (const auto& region : Europe::instance.shapes) {
                 if (k == region.owner) {
@@ -70,6 +74,7 @@ void ChooseSave::loadData() {
             }
             save["countries"][k] = item;
         }
+        
     }
     else {
         Game::instance.currentCountry = save["country"];

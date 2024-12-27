@@ -49,4 +49,5 @@ class Game
     void FixedUpdate();
     void Render();
     void Exit();
+    void Save();
 };

@@ -14,8 +14,6 @@ add_subdirectory(ext/SFML-2.6.2)
 add_subdirectory(ext/json-develop)
 
 
-#file(GLOB_RECURSE SOURCES "${CMAKE_SOURCE_DIR}/src/*.cpp")
-
 add_executable(ww1_game 
     src/main.cpp
     src/gamelogic.cpp

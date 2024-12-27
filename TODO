@@ -7,10 +7,10 @@
 [*] Translations
 [+] Interpreter
 [*] Collision system
-[ ] Saving
-    [!] Saving all countries
-[ ] Economy
+[*] Saving
+    [*] Saving all countries
 [ ] Politics
+[ ] Economy
 [ ] Stability points
 [ ] World News
 [ ] Adding troops

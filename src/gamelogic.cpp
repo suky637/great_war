@@ -122,6 +122,12 @@ void Game::ChangeScene(int scene)
 
 void Game::Exit() {
     // Saving happens here
+    this->Save();
+
+    exit(0);
+}
+
+void Game::Save() {
     if (this->save_file != "") {
         std::string s = this->currentSave.dump();
 
@@ -131,8 +137,6 @@ void Game::Exit() {
 
         std::cout << "Wrote data sucessfuly to " << TEXT_GREEN << this->save_file << RESET_COLOR << "\n";
     }
-
-    exit(0);
 }
 
 Game Game::instance;

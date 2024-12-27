@@ -27,7 +27,7 @@ void GUI::Update(GUI* gui)
     for (const auto& [k, comp] : components)
     {
         comp->Input(view);
-        if (comp->isHovered(view))
+        if (comp->isHovered(view) && comp->visible)
             this->hovered = true;
         if (comp->GetType() == "Button") {
             Button* btn = (Button*)comp->GetComponent();

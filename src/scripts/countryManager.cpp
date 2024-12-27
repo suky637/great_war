@@ -16,8 +16,6 @@ void CountryManager::Update(GUI* gui)
         }
         Button* button = (Button*)gui->components["Select_Country"]->GetComponent();
         button->forceEvent();
-        if (gui->Exist("selectFlag"))
-            gui->components.at("selectFlag")->visible = true;
     }
     if (gui->Exist("flags") && !hasSelectedACountry)
     {
@@ -30,7 +28,19 @@ void CountryManager::Update(GUI* gui)
     else if (gui->Exist("selectFlag") && hasSelectedACountry)
     {
         DynImageBox* ima = (DynImageBox*)gui->components["selectFlag"]->GetComponent();
-        if ("ressources/flags/" + selectedCountry + ".png" != ima->path)
+        DynLabel* likeness = (DynLabel*)gui->components["likeness"]->GetComponent();
+        
+        if (selectedCountry == "NONE" || selectedCountry == "") {
+            ima->visible = false;
+            likeness->visible = false;
+        }
+        else {
+            ima->visible = true;
+            likeness->visible = true;
+            int liken =  Game::instance.currentSave["countries"][Game::instance.currentCountry]["likeness"][selectedCountry];
+            likeness->Value("Likeness: " + std::to_string(liken));
+        }
+        if ("ressources/flags/" + selectedCountry + ".png" != ima->path && selectedCountry != "" && selectedCountry != "NONE")
         {
             ima->Value("ressources/flags/" + selectedCountry + ".png");
         }

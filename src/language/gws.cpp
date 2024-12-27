@@ -183,6 +183,11 @@ void GWS::runEvent(std::string id, GWS_EventTypes e, GUI* gui) {
                 i++;
                 continue;
             }
+            if (tokens.at(i+1) == "Wsave") {
+                Game::instance.Save();
+                i++;
+                continue;
+            }
         }
         else if (tokens.at(i) == "Wadd") {
             float num = 0;
