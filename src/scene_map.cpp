@@ -4,6 +4,41 @@
 #include "camera_movement.h"
 #include "scripts/countryManager.h"
 #include "engine/colour.h"
+#include "Graphics/ShaderManager.h"
+
+std::pair<sf::Sprite, sf::Texture> Europe::pixelizeShape(sf::ConvexShape& shape, float pixelSize, sf::Color shapeColour) {
+    sf::RenderTexture renderTexture;
+    if (!renderTexture.create(window->getSize().x, window->getSize().y)) {
+        std::cout << "Failed to create a render texture of the window size, exiting the program.\n";
+        exit(1);
+    }
+
+    renderTexture.clear(sf::Color::Transparent);
+    shape.setFillColor(shapeColour);
+    renderTexture.draw(shape);
+    renderTexture.display();
+
+    sf::Texture texture = renderTexture.getTexture();
+    sf::Sprite sprite(texture);
+
+    sf::Vector2u textureSize = texture.getSize();
+
+    sf::RenderTexture pixelizedTexture;
+    if (!pixelizedTexture.create(textureSize.x / pixelSize, textureSize.y / pixelSize)) {
+        std::cout << "Failed to add the pixelated effect, exiting the program.\n";
+        exit(1);
+    }
+
+    pixelizedTexture.clear(sf::Color::Transparent);
+    sprite.setScale(1.0f / pixelSize, 1.0f / pixelSize);
+    pixelizedTexture.draw(sprite);
+    pixelizedTexture.display();
+
+    sf::Sprite pixelatedSprite(pixelizedTexture.getTexture());
+    pixelatedSprite.setScale(pixelSize, pixelSize);
+
+    return std::pair<sf::Sprite, sf::Texture>{pixelatedSprite, pixelizedTexture.getTexture()};
+}
 
 void Europe::Awake()
 {
@@ -31,7 +66,7 @@ void Europe::Awake()
         {
             sf::ConvexShape shape{};
             shape.setOutlineColor(sf::Color::Black);
-            shape.setOutlineThickness(0.1f);
+            shape.setOutlineThickness(1.5f);
             shape.setFillColor(sf::Color(country.at("colour")["R"], country.at("colour")["G"], country.at("colour")["B"], data["config"]["countryOpacity"]));
             int index = 0;
             for (auto coord : region.at("coords"))
@@ -49,7 +84,8 @@ void Europe::Awake()
             txt.setString(reg_name);
             txt.setPosition(sf::Vector2f(region["text_pos"]["X"], region["text_pos"]["Y"]));
             
-            this->shapes.push_back({shape, iso, reg_name, txt}); // [own] [rest]
+            auto sh = this->pixelizeShape(shape, 1.1f, colours_iso[iso]);
+            this->shapes.push_back({shape, iso, reg_name, txt, sh.first, sh.second}); // [own] [rest]
         }
     }
 
@@ -261,8 +297,9 @@ void Europe::Draw()
     }
     for (auto shape : shapes)
     {
-        shape.shape.setFillColor(colours_iso[shape.owner]);
-        this->window->draw(shape.shape);
+        //shape.shape.setFillColor(colours_iso[shape.owner]);
+        shape.render_shape.setTexture(shape.render_texture);
+        this->window->draw(shape.render_shape);
         shape.text.setFont(font);
         this->window->draw(shape.text);
     }

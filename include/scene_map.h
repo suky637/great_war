@@ -10,6 +10,8 @@ struct Country {
     std::string owner;
     std::string region_name;
     sf::Text text;
+    sf::Sprite render_shape;
+    sf::Texture render_texture;
 };
 
 class Europe: public Scene
@@ -36,6 +38,8 @@ class Europe: public Scene
     json game_json;
 
     int preview_index = 0;
+
+    std::pair<sf::Sprite, sf::Texture> pixelizeShape(sf::ConvexShape& shape, float pixelSize, sf::Color shapeColour);
 
     public:
 
