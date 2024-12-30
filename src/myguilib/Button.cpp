@@ -1,5 +1,6 @@
 #include "myguilib/Button.h"
 #include "engine/string_manip.h"
+#include "engine/audio_manager.h"
 
 Button::Button(
     sf::RenderWindow* win, 
@@ -20,7 +21,8 @@ Button::Button(
 
     this->rect.setSize(size);
     this->rect.setPosition(pos);
-    this->rect.setFillColor(sf::Color(91, 91, 91));
+    this->rect.setFillColor(sf::Color(85, 85, 85));
+    this->rect.setOutlineColor(sf::Color(170, 170, 170));
 
     this->label.setFont(gui->font);
     this->label.setString(sf::String(utf8ToUtf32(text)));
@@ -75,18 +77,18 @@ void Button::Input(sf::View* view)
         if (!crntClicked && lastClick)
         {
             isClicked = true;
-            
+            AudioManager::instance.PlayButtonClick();
             if (hasLinked)
                 gws.runEvent(id, GWS_EventTypes::ON_CLICKED, gui);
             
             lastClick = false;
         }
 
-        rect.setFillColor(sf::Color(81, 81, 81));
+        rect.setFillColor(sf::Color(102, 102, 102));
         rect.setOutlineThickness(1);
         return;
     }
-    rect.setFillColor(sf::Color(91, 91, 91));
+    rect.setFillColor(sf::Color(85, 85, 85));
     rect.setOutlineThickness(0);
     
 }

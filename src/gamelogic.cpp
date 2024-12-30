@@ -1,6 +1,7 @@
 #include "gamelogic.h"
 #include "choose_save.h"
 #include "settings_scene.h"
+#include "loading_screen.h"
 #include "engine/colour.h"
 
 Game::Game(sf::RenderWindow* window)
@@ -54,6 +55,12 @@ void Game::Begin()
     gui_viewport = win->getView();
 
     gws.interpret(data["links"][0]);
+
+    LoadingScreen::instance.window = win;
+    LoadingScreen::instance.view = &viewport;
+    LoadingScreen::instance.gui_view = &gui_viewport;
+    LoadingScreen::instance.Awake();
+    scenes.push_back(&LoadingScreen::instance);
 
     MainMenu::instance.window = win;
     MainMenu::instance.view = &viewport;

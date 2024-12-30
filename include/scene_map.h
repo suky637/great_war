@@ -28,6 +28,9 @@ class Europe: public Scene
 
     sf::RectangleShape background;
 
+    sf::Sprite render_batch_sprite;
+    sf::RenderTexture render_batch;
+
     std::string currentCountry = "";
 
     // Rest
@@ -76,4 +79,5 @@ class Europe: public Scene
     void FixedUpdate() override;
     void Draw() override;
     void Editor(bool gui_hovered);
+    void RenderBatch();
 };

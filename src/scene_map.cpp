@@ -5,6 +5,28 @@
 #include "scripts/countryManager.h"
 #include "engine/colour.h"
 #include "Graphics/ShaderManager.h"
+#include "loading_screen.h"
+#include "engine/Mouse.h"
+#include "gamelogic.h"
+#include <random>
+#include <algorithm>
+
+int clamp(int value, int min, int max) {
+    if (value < min) return min;
+    if (value > max) return max;
+    return value;
+}
+
+void Europe::RenderBatch() {
+    render_batch.clear(sf::Color::Transparent);
+    for (auto shape : shapes)
+    {
+        shape.render_shape.setTexture(shape.render_texture);
+        render_batch.draw(shape.render_shape);
+    }
+    render_batch.display();
+    render_batch_sprite.setTexture(render_batch.getTexture());
+}
 
 std::pair<sf::Sprite, sf::Texture> Europe::pixelizeShape(sf::ConvexShape& shape, float pixelSize, sf::Color shapeColour) {
     sf::RenderTexture renderTexture;
@@ -34,14 +56,34 @@ std::pair<sf::Sprite, sf::Texture> Europe::pixelizeShape(sf::ConvexShape& shape,
     pixelizedTexture.draw(sprite);
     pixelizedTexture.display();
 
-    sf::Sprite pixelatedSprite(pixelizedTexture.getTexture());
+    sf::Image image = pixelizedTexture.getTexture().copyToImage();
+
+    #define SEED 0
+    #define DIFF 10
+    srand(SEED);
+    for (int x = 0; x < image.getSize().x; ++x) {
+        for (int y = 0; y < image.getSize().y; ++y) {
+            sf::Color pixel = image.getPixel(x, y);
+            if (pixel == sf::Color::Transparent) continue;
+            int d = (rand() % (DIFF*2) - DIFF);
+            //std::cout << "R: " << pixel.r << "; G: " << pixel.g << "; B: " << pixel.b << "\n";
+            pixel = sf::Color(clamp(pixel.r + d, 0, 255), clamp(pixel.g + d, 0, 255), clamp(pixel.b + d, 0, 255), 255);
+            image.setPixel(x, y, pixel);
+        }
+    }
+
+    sf::Texture returnTex;
+    returnTex.loadFromImage(image);
+
+    sf::Sprite pixelatedSprite(returnTex);
     pixelatedSprite.setScale(pixelSize, pixelSize);
 
-    return std::pair<sf::Sprite, sf::Texture>{pixelatedSprite, pixelizedTexture.getTexture()};
+    return std::pair<sf::Sprite, sf::Texture>{pixelatedSprite, returnTex};
 }
 
 void Europe::Awake()
 {
+    render_batch.create(1280, 720);
     sceneName = "europe";
     // Loading ressources
     std::fstream fgame{"ressources/game.json"};
@@ -56,8 +98,11 @@ void Europe::Awake()
 
 
     // Loading every countries
+    float size = data.at("countries").size();
+    float index = 1;
     for (auto country : data.at("countries"))
     {
+        LoadingScreen::instance.setValue(index / size * 100.f);
         std::string iso = country["ISO"];
         isos.insert_or_assign(iso, country["name"]);
         colours_iso.insert_or_assign(iso, sf::Color(country.at("colour")["R"], country.at("colour")["G"], country.at("colour")["B"], data["config"]["countryOpacity"]));
@@ -66,7 +111,7 @@ void Europe::Awake()
         {
             sf::ConvexShape shape{};
             shape.setOutlineColor(sf::Color::Black);
-            shape.setOutlineThickness(1.5f);
+            shape.setOutlineThickness(1.0f);
             shape.setFillColor(sf::Color(country.at("colour")["R"], country.at("colour")["G"], country.at("colour")["B"], data["config"]["countryOpacity"]));
             int index = 0;
             for (auto coord : region.at("coords"))
@@ -78,16 +123,19 @@ void Europe::Awake()
                 shape.setPoint(index, vec2);
                 index++;
             }
+            LoadingScreen::instance.Draw();
             sf::Text txt;
             std::string reg_name = region["name"];
             txt.setScale(sf::Vector2f(region["scale"], region["scale"]));
             txt.setString(reg_name);
             txt.setPosition(sf::Vector2f(region["text_pos"]["X"], region["text_pos"]["Y"]));
             
-            auto sh = this->pixelizeShape(shape, 1.1f, colours_iso[iso]);
+            auto sh = this->pixelizeShape(shape, 1.f, colours_iso[iso]);
             this->shapes.push_back({shape, iso, reg_name, txt, sh.first, sh.second}); // [own] [rest]
         }
+        index++;
     }
+    RenderBatch();
 
     std::cout << "ISO (std::map<std::string, std::string>) size = " << isos.size() << "\n";
 
@@ -101,7 +149,7 @@ void Europe::Awake()
     cameraMovement.Start();
     scripts.insert_or_assign("1", std::make_unique<CameraMovement>(std::move(cameraMovement)));
 
-    europeReferenceMap.loadFromFile("ressources/image.png");
+    europeReferenceMap.loadFromFile("ressources/images/background.png");
     referenceImageForEditor.setSize(sf::Vector2f(1280, 720));
     referenceImageForEditor.setTexture(&europeReferenceMap);
 
@@ -119,6 +167,8 @@ void Europe::Awake()
     countryManager.window = window;
     countryManager.Start();
     scripts.insert_or_assign("countryManager", std::make_unique<CountryManager>(std::move(countryManager)));
+
+    Game::instance.ChangeScene(1);
 }
 
 void Europe::Start()
@@ -255,7 +305,7 @@ void Europe::Update()
         this->Editor(gui.hovered);
 
         // just testing something
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        if (S_Mouse::instance.isMouseButtonUp(sf::Mouse::Button::Left)) {
             bool collision = false;
             for (auto shape : shapes)
             {
@@ -295,14 +345,7 @@ void Europe::Draw()
         referenceImageForEditor.setTexture(&europeReferenceMap);
         this->window->draw(referenceImageForEditor);
     }
-    for (auto shape : shapes)
-    {
-        //shape.shape.setFillColor(colours_iso[shape.owner]);
-        shape.render_shape.setTexture(shape.render_texture);
-        this->window->draw(shape.render_shape);
-        shape.text.setFont(font);
-        this->window->draw(shape.text);
-    }
+    this->window->draw(render_batch_sprite);
     if (preview.getPointCount() >= 3)
         this->window->draw(preview);
     for (auto point : points)

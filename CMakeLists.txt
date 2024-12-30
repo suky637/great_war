@@ -22,6 +22,7 @@ add_executable(ww1_game
     src/mainmenu.cpp
     src/choose_save.cpp
     src/settings_scene.cpp
+    src/loading_screen.cpp
     src/myguilib/Button.cpp
     src/myguilib/Component.cpp
     src/myguilib/Frame.cpp
@@ -35,6 +36,9 @@ add_executable(ww1_game
     src/engine/Script.cpp
     src/engine/time_manager.cpp
     src/engine/string_manip.cpp
+    src/engine/Keyboard.cpp
+    src/engine/Mouse.cpp
+    src/engine/audio_manager.cpp
     src/Physics/PIP.cpp
     src/scripts/countryManager.cpp
     src/language/gws.cpp

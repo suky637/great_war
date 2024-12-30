@@ -2,6 +2,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include "gamelogic.h"
+#include "engine/Mouse.h"
+#include "engine/Keyboard.h"
 
 #define MAX_FPS 1.f / 60.f
 
@@ -24,8 +26,28 @@ void doEvents(sf::RenderWindow* win)
             float delta = event.mouseWheelScroll.delta;
             Game::instance.scroll = delta;
             break;
-            }
-         default:
+        }
+        case sf::Event::KeyPressed:
+        {
+            S_Keyboard::instance.SetKeyboardState(event.key.code);
+            break;
+        }
+        case sf::Event::KeyReleased:
+        {
+            S_Keyboard::instance.SetKeyboardStateReleased(event.key.code);
+            break;
+        }
+        case sf::Event::MouseButtonPressed:
+        {
+            S_Mouse::instance.SetMouseState(event.mouseButton.button);
+            break;
+        }
+        case sf::Event::MouseButtonReleased:
+        {
+            S_Mouse::instance.SetMouseStateReleased(event.mouseButton.button);
+            break;
+        }
+        default:
             break;
         }
     }
@@ -48,6 +70,8 @@ int main(int, char**){
     {
         float crntTime = clock.getElapsedTime().asSeconds(); 
         
+        S_Mouse::instance.UpdateInputs();
+        S_Keyboard::instance.UpdateInputs();
         doEvents(&window);
 
         float dt = crntTime - lastTime;
