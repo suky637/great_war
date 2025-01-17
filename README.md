@@ -1,6 +1,10 @@
 # Great War
 This is the open source part of the project
 
+This game is an RTS game set in WW1. The goal is to create a customizable experience for every player, and give them the power to do anything in-game.
+
+![ShowcaseState2025]()
+
 ## Building from source
 For that you'll need to install:
 - JSON by nlohmann, version 3.11.3
