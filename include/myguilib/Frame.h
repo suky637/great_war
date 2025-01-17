@@ -16,6 +16,7 @@ class Frame: public Component
 {
     private:
     sf::RectangleShape rect;
+    GUI* gui;
     public:
     Frame(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string id = "", bool visible = true);
     void Draw(sf::Font font) override;

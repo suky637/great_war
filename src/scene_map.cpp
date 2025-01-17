@@ -17,15 +17,67 @@ int clamp(int value, int min, int max) {
     return value;
 }
 
-void Europe::RenderBatch() {
+sf::Vector2f getCenter(sf::ConvexShape shape) {
+    float area = 0;
+    float cx = 0;
+    float cy = 0;
+    size_t n = shape.getPointCount();
+
+    for (int i = 0; i < n; i++) {
+        float x_i = shape.getPoint(i).x;
+        float y_i = shape.getPoint(i).y;
+        float x_next = shape.getPoint((i + 1) % n).x;
+        float y_next = shape.getPoint((i + 1) % n).y;
+
+        float cross = (x_i * y_next - x_next * y_i);
+
+        area += cross;
+
+        cx += (x_i + x_next) * cross;
+        cy += (y_i + y_next) * cross;
+    }
+
+    area /= 2;
+    cx /= (6 * area);
+    cy /= (6 * area);
+    //std::cout << cx << "; " << cy << "\n";
+    return sf::Vector2f(cx, cy);
+}
+
+void Europe::ClearBatch() {
     render_batch.clear(sf::Color::Transparent);
+    troop_render_batch.clear(sf::Color::Transparent);
+}
+
+void Europe::CreateTroopBatch() {
+    for (auto shape : shapes) {
+        int trp = Game::instance.currentSave["tiles"][shape.region_name]["troops"];
+        if (trp != 0) {
+            sf::CircleShape troop;
+            sf::Vector2f center = getCenter(shape.shape);
+            troop.setFillColor(sf::Color(255, 0, 0, 100));
+            troop.setPosition(center - sf::Vector2f(1.f, 1.f));
+            troop.setRadius(2);
+            troopsRender.insert_or_assign(shape.region_name, troop);
+        }
+    }
+}
+
+void Europe::RenderBatch(bool dontClear) {
+    if (!dontClear) {
+        ClearBatch();
+    }
     for (auto shape : shapes)
     {
         shape.render_shape.setTexture(shape.render_texture);
         render_batch.draw(shape.render_shape);
     }
+    for (auto const& [k, shape] : troopsRender)
+        troop_render_batch.draw(shape);
     render_batch.display();
     render_batch_sprite.setTexture(render_batch.getTexture());
+    troop_render_batch.display();
+    troop_render_batch_sprite.setTexture(troop_render_batch.getTexture());
 }
 
 std::pair<sf::Sprite, sf::Texture> Europe::pixelizeShape(sf::ConvexShape& shape, float pixelSize, sf::Color shapeColour) {
@@ -84,6 +136,7 @@ std::pair<sf::Sprite, sf::Texture> Europe::pixelizeShape(sf::ConvexShape& shape,
 void Europe::Awake()
 {
     render_batch.create(1280, 720);
+    troop_render_batch.create(1280, 720);
     sceneName = "europe";
     // Loading ressources
     std::fstream fgame{"ressources/game.json"};
@@ -104,6 +157,7 @@ void Europe::Awake()
     {
         LoadingScreen::instance.setValue(index / size * 100.f);
         std::string iso = country["ISO"];
+        std::cout << "ISO: " << iso << "\n";
         isos.insert_or_assign(iso, country["name"]);
         colours_iso.insert_or_assign(iso, sf::Color(country.at("colour")["R"], country.at("colour")["G"], country.at("colour")["B"], data["config"]["countryOpacity"]));
         std::cout << TEXT_BLUE "Detected a country!, " << country.at("name") << "[" << country["ISO"] << "]" << RESET_COLOR << "\n";
@@ -135,7 +189,6 @@ void Europe::Awake()
         }
         index++;
     }
-    RenderBatch();
 
     std::cout << "ISO (std::map<std::string, std::string>) size = " << isos.size() << "\n";
 
@@ -167,6 +220,8 @@ void Europe::Awake()
     countryManager.window = window;
     countryManager.Start();
     scripts.insert_or_assign("countryManager", std::make_unique<CountryManager>(std::move(countryManager)));
+
+    font.loadFromFile("ressources/StupidMonoSerif-Regular.ttf");
 
     Game::instance.ChangeScene(1);
 }
@@ -336,8 +391,16 @@ void Europe::FixedUpdate()
     }
 }
 
+#include "choose_save.h"
+
 void Europe::Draw()
 {
+    static bool firstTime = true;
+    /*if (Game::instance.currentSave.find("tiles") != Game::instance.currentSave.end())
+    {
+        RenderBatch(false);
+        firstTime = false;
+    }*/
     this->window->draw(background);
 
     if (!hide_placeholder)
@@ -346,11 +409,12 @@ void Europe::Draw()
         this->window->draw(referenceImageForEditor);
     }
     this->window->draw(render_batch_sprite);
+    this->window->draw(troop_render_batch_sprite);
     if (preview.getPointCount() >= 3)
         this->window->draw(preview);
+    //for (auto a : regi)
     for (auto point : points)
     {
-        this->window->draw(point.second);
         point.first.setFont(font);
         this->window->draw(point.first);
     }

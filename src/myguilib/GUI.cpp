@@ -6,6 +6,9 @@ GUI::GUI()
 
 }
 
+void GUI::Start() {
+}
+
 GUI::GUI(sf::Font& font)
 {
     this->font = sf::Font(font);
@@ -19,6 +22,15 @@ std::string GUI::getId()
 GUI* GUI::getScript()
 {
     return this;
+}
+
+void GUI::renderGUIImage() {
+    window->setView(*view);
+    for (const auto& [k, comp] : components)
+    {
+        if (comp->visible)
+            comp->Draw(font);
+    }
 }
 
 void GUI::Update(GUI* gui)
@@ -43,13 +55,7 @@ bool GUI::Exist(std::string compId)
 
 void GUI::Draw()
 {
-    window->setView(*view);
-    for (const auto& [k, comp] : components)
-    {
-        if (comp->visible)
-            comp->Draw(font);
-    }
-    //std::cout << "Reached end!\n";
+    renderGUIImage();
 }
 
 bool GUI::isClicked(std::string id)
@@ -149,5 +155,8 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
         }
     }
     std::cout << "Done\n";
+
+    // ig good time to define the image lmao
+    createdGUI = rendered_gui.create(1280, 720);
 }
 //template void GUI::AddComponent<DynImageBox>(sf::Vector2f, std::string, std::string, int, bool);

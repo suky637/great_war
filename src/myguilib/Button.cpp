@@ -64,6 +64,10 @@ void Button::Input(sf::View* view)
 
     if (this->isHovered(view) && this->visible)
     {
+        if (firstHolding) {
+            AudioManager::instance.PlayButtonHold();
+            firstHolding = false;
+        }
         if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         {
             //std::cout << "CLICK BUTTON\n";
@@ -83,11 +87,11 @@ void Button::Input(sf::View* view)
             
             lastClick = false;
         }
-
         rect.setFillColor(sf::Color(102, 102, 102));
         rect.setOutlineThickness(1);
         return;
     }
+    firstHolding = true;
     rect.setFillColor(sf::Color(85, 85, 85));
     rect.setOutlineThickness(0);
     

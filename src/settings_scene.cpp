@@ -11,7 +11,6 @@ void Settings_Scene::Awake() {
 }
 
 void Settings_Scene::Start() {
-
 }
 
 void Settings_Scene::Update() {

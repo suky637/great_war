@@ -9,6 +9,7 @@ ImageBox::ImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector
     this->rect.setSize(size);
     this->rect.setPosition(pos);
     this->rect.setTexture(&texture);
+    this->gui = gui;
 
     gui->components.insert_or_assign(id == "" ? "image" : id, std::make_unique<ImageBox>(*this));
 }
@@ -16,7 +17,7 @@ ImageBox::ImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector
 void ImageBox::Draw(sf::Font font)
 {
     this->rect.setTexture(&texture);
-    this->win->draw(this->rect);
+    win->draw(this->rect);
 }
 
 std::string ImageBox::GetType()

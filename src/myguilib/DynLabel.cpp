@@ -12,6 +12,7 @@ DynLabel::DynLabel(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, int size, 
     this->label.setPosition(pos);
     this->label.setFillColor(sf::Color::White);
     this->label.setStyle(sf::Text::Style::Regular);
+    this->gui = gui;
 
     gui->components.insert_or_assign(id == "" ? text : id, std::make_unique<DynLabel>(*this));
 }

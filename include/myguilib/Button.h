@@ -19,6 +19,7 @@
 class Button: public Component
 {
     private:
+    bool firstHolding = true;
     sf::Text label;
     sf::RectangleShape rect{};
     bool lastClick = false;

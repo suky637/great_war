@@ -55,6 +55,7 @@ void ChooseSave::loadData() {
         save["reset"] = false;
         save["country"] = "NONE";
         save["countries"] = json::object();
+        save["tiles"] = json::object();
         std::cout << "(choose_save.cpp / line 58) Europe's ISOs = " << Europe::instance.isos.size() << "\n";
         for (const auto& [k, v] : Europe::instance.isos) {
             json item = {
@@ -74,7 +75,12 @@ void ChooseSave::loadData() {
             }
             save["countries"][k] = item;
         }
-        
+        for (const auto& region : Europe::instance.shapes) {
+            save["tiles"][region.region_name] = {
+                {"owner", region.owner},
+                {"troops", 1}
+            };
+        }
     }
     else {
         Game::instance.currentCountry = save["country"];
@@ -101,6 +107,9 @@ void ChooseSave::loadData() {
             Europe::instance.client_stability = save["countries"][save["country"]]["stability"];
         }
     }
+    //Europe::instance.CreateTroopBatch();
+    Europe::instance.CreateTroopBatch();
+    Europe::instance.RenderBatch(false);
 }
 
 void ChooseSave::Update() {

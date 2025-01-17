@@ -6,5 +6,8 @@ class AudioManager {
     AudioManager();
     sf::SoundBuffer button_click_buffer;
     sf::Sound button_click;
+    sf::SoundBuffer button_hold_buffer;
+    sf::Sound button_hold;
     void PlayButtonClick();
+    void PlayButtonHold();
 };

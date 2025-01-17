@@ -17,6 +17,7 @@ class ImageBox: public Component
     private:
     sf::Texture texture;
     sf::RectangleShape rect;
+    GUI* gui;
     public:
     ImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string _path, std::string id = "", bool visible = true);
     void Draw(sf::Font font) override;

@@ -10,6 +10,7 @@ DynImageBox::DynImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::
     this->rect.setSize(size);
     this->rect.setPosition(pos);
     this->rect.setTexture(&texture);
+    this->gui = gui;
 
     gui->components.insert_or_assign(id == "" ? "image" : id, std::make_unique<DynImageBox>(*this));
 }
@@ -17,7 +18,7 @@ DynImageBox::DynImageBox(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::
 void DynImageBox::Draw(sf::Font font)
 {
     this->rect.setTexture(&texture);
-    this->win->draw(this->rect);
+    win->draw(this->rect);
 }
 
 void DynImageBox::Value(std::string path)

@@ -33,7 +33,7 @@ void Game::AdjustViewport()
     else
     {
         viewport.setViewport(sf::FloatRect(0.f, (1.f - ratio_height) / 2.f, 1.f, ratio_height));
-        gui_viewport.setViewport(sf::FloatRect((1.f - ratio_width) / 2.f, 0.f, ratio_width, 1.f));
+        gui_viewport.setViewport(sf::FloatRect(0.f, (1.f - ratio_height) / 2.f, 1.f, ratio_height));
     }
 }
 
@@ -144,6 +144,13 @@ void Game::Save() {
 
         std::cout << "Wrote data sucessfuly to " << TEXT_GREEN << this->save_file << RESET_COLOR << "\n";
     }
+
+    Europe::instance.ClearBatch();
+    Europe::instance.render_batch.draw(Europe::instance.background);
+    Europe::instance.RenderBatch(true);
+
+    sf::Image image = Europe::instance.render_batch.getTexture().copyToImage();
+    image.saveToFile("ressources/images/generated/gen_eu_map.png");
 }
 
 Game Game::instance;

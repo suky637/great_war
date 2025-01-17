@@ -21,6 +21,8 @@ using json = nlohmann::json;
 class GUI
 {
     public:
+    bool createdGUI = false;
+    sf::RenderTexture rendered_gui;
     float deltaTime;
     int scroll;
 
@@ -29,6 +31,8 @@ class GUI
     sf::Font font;
     bool hovered;
     bool Exist(std::string compId);
+    void renderGUIImage();
+    void Start();
     GUI();
     GUI(sf::Font& font);
     std::map<std::string, std::unique_ptr<Component>> components{};
