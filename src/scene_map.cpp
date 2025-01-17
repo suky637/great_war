@@ -190,6 +190,19 @@ void Europe::Awake()
         index++;
     }
 
+    if (!std::filesystem::exists("ressources/data/map_cache.json")) {
+        CreateAdjacentTerritories();
+        // saving to cache
+        std::string s = adjacentPolygons.dump();
+        std::ofstream __file("ressources/data/map_cache.json", std::ios::out);
+        __file << s;
+        __file.close();
+    }
+    else {
+        std::fstream fmapcache{"ressources/data/map_cache.json"};
+        adjacentPolygons = json::parse(fmapcache);
+    }
+
     std::cout << "ISO (std::map<std::string, std::string>) size = " << isos.size() << "\n";
 
     if (data["config"]["EDITOR_SNAPPING_ENABLED"])
@@ -424,6 +437,26 @@ void Europe::Draw()
         script->Draw();
     }
     gui.Draw();
+}
+
+void Europe::CreateAdjacentTerritories() {
+    for (auto shape : shapes) {
+        adjacentPolygons[shape.region_name] = json::array();
+        for (auto shape2 : shapes) {
+            int pointCommon = 0;
+            for (int point_ind2 = 0; point_ind2 < shape2.shape.getPointCount(); ++point_ind2) {
+                for (int point_ind = 0; point_ind < shape.shape.getPointCount(); ++point_ind) {
+                    if (shape.region_name == shape2.region_name) break;
+                    if (shape.shape.getPoint(point_ind) == shape2.shape.getPoint(point_ind2)) {
+                        pointCommon++;
+                    }
+                }
+            }
+            if (pointCommon > 1) {
+                adjacentPolygons[shape.region_name].push_back(shape2.region_name);
+            }
+        }
+    }
 }
 
 Europe Europe::instance;
