@@ -44,6 +44,7 @@ class Europe: public Scene
     std::pair<sf::Sprite, sf::Texture> pixelizeShape(sf::ConvexShape& shape, float pixelSize, sf::Color shapeColour);
     std::map<std::string, sf::CircleShape> troopsRender{};
     json adjacentPolygons{};
+    std::map<std::string, std::string> region_to_iso{};
 
     public:
     sf::RenderTexture troop_render_batch;

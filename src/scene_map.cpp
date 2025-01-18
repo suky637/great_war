@@ -53,12 +53,28 @@ void Europe::CreateTroopBatch() {
     for (auto shape : shapes) {
         int trp = Game::instance.currentSave["tiles"][shape.region_name]["troops"];
         if (trp != 0) {
-            sf::CircleShape troop;
-            sf::Vector2f center = getCenter(shape.shape);
-            troop.setFillColor(sf::Color(255, 0, 0, 100));
-            troop.setPosition(center - sf::Vector2f(1.f, 1.f));
-            troop.setRadius(2);
-            troopsRender.insert_or_assign(shape.region_name, troop);
+            // check for adjacent tiles
+            bool owned = true;
+            bool adjacent = false;
+            if (shape.owner != Game::instance.currentCountry) {
+                    owned = false;
+                    for (const auto& rgN : adjacentPolygons[shape.region_name]) {
+                        if (region_to_iso[rgN] == Game::instance.currentCountry) {
+                            adjacent = true;
+                        }
+                    }
+            } else {
+                adjacent = true;
+            }
+            if (adjacent) {
+                sf::CircleShape troop;
+                sf::Vector2f center = getCenter(shape.shape);
+
+                troop.setFillColor(sf::Color(owned ? 0 : 255, 0, owned ? 255 : 0, 100));
+                troop.setPosition(center - sf::Vector2f(1.f, 1.f));
+                troop.setRadius(2);
+                troopsRender.insert_or_assign(shape.region_name, troop);
+            }
         }
     }
 }
@@ -183,6 +199,8 @@ void Europe::Awake()
             txt.setScale(sf::Vector2f(region["scale"], region["scale"]));
             txt.setString(reg_name);
             txt.setPosition(sf::Vector2f(region["text_pos"]["X"], region["text_pos"]["Y"]));
+
+            region_to_iso.insert_or_assign(reg_name, iso);
             
             auto sh = this->pixelizeShape(shape, 1.f, colours_iso[iso]);
             this->shapes.push_back({shape, iso, reg_name, txt, sh.first, sh.second}); // [own] [rest]

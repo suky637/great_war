@@ -3,7 +3,7 @@ This is the open source part of the project
 
 This game is an RTS game set in WW1. The goal is to create a customizable experience for every player, and give them the power to do anything in-game.
 
-![ShowcaseState2025](https://github.com/suky637/great_war/blob/newmain/archives/atm_16_january_2025.png?raw=true)
+![ShowcaseState2025](https://github.com/suky637/great_war/blob/newmain/archives/atm_17_january_2025.png?raw=true)
 
 ## Building from source
 For that you'll need to install:
