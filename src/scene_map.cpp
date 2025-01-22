@@ -46,10 +46,10 @@ sf::Vector2f getCenter(sf::ConvexShape shape) {
 
 void Europe::ClearBatch() {
     render_batch.clear(sf::Color::Transparent);
-    troop_render_batch.clear(sf::Color::Transparent);
 }
 
 void Europe::CreateTroopBatch() {
+    troopsRender.clear();
     for (auto shape : shapes) {
         int trp = Game::instance.currentSave["tiles"][shape.region_name]["troops"];
         if (trp != 0) {
@@ -64,19 +64,26 @@ void Europe::CreateTroopBatch() {
                         }
                     }
             } else {
-                adjacent = true;
             }
-            if (adjacent) {
+            if (adjacent || shape.owner == Game::instance.currentCountry) {
                 sf::CircleShape troop;
                 sf::Vector2f center = getCenter(shape.shape);
-
-                troop.setFillColor(sf::Color(owned ? 0 : 255, 0, owned ? 255 : 0, 100));
+                troop.setOutlineColor(sf::Color::Yellow);
+                troop.setFillColor(sf::Color(owned ? 0 : 255, 0, owned ? 255 : 0, adjacent ? 70 : 255));
                 troop.setPosition(center - sf::Vector2f(1.f, 1.f));
                 troop.setRadius(2);
                 troopsRender.insert_or_assign(shape.region_name, troop);
             }
         }
     }
+}
+
+void Europe::RenderTroops() {
+    troop_render_batch.clear(sf::Color::Transparent);
+    for (auto const& [k, shape] : troopsRender)
+        troop_render_batch.draw(shape);
+    troop_render_batch.display();
+    troop_render_batch_sprite.setTexture(troop_render_batch.getTexture());
 }
 
 void Europe::RenderBatch(bool dontClear) {
@@ -88,12 +95,11 @@ void Europe::RenderBatch(bool dontClear) {
         shape.render_shape.setTexture(shape.render_texture);
         render_batch.draw(shape.render_shape);
     }
-    for (auto const& [k, shape] : troopsRender)
-        troop_render_batch.draw(shape);
+
+    RenderTroops();
+    
     render_batch.display();
     render_batch_sprite.setTexture(render_batch.getTexture());
-    troop_render_batch.display();
-    troop_render_batch_sprite.setTexture(troop_render_batch.getTexture());
 }
 
 std::pair<sf::Sprite, sf::Texture> Europe::pixelizeShape(sf::ConvexShape& shape, float pixelSize, sf::Color shapeColour) {
@@ -368,7 +374,13 @@ void Europe::Update()
         preview_index = 0;
         points.clear();
     }
-    
+
+    for (int i = 0; i < pool.size(); ++i) {
+        if (pool.at(i).wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
+            pool.at(i).get();
+            pool.erase(pool.begin() + i);
+        }
+    }
 
     for (const auto& [k, script] : scripts)
     {
@@ -393,6 +405,30 @@ void Europe::Update()
         // just testing something
         if (S_Mouse::instance.isMouseButtonUp(sf::Mouse::Button::Left)) {
             bool collision = false;
+            bool troopT = false;
+            Europe::hasMapChanged = false;
+            sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view);
+            for (auto [k, troop] : troopsRender) {
+                // point in circle collision
+                if (
+                    sqrt(
+                        (mousePos.x-(troop.getPosition().x+1.f)) *
+                        (mousePos.x-(troop.getPosition().x+1.f)) +
+                        (mousePos.y-(troop.getPosition().y+1.f)) * 
+                        (mousePos.y-(troop.getPosition().y+1.f))) <= 4.f) {
+                    troopT = true;
+                    std::cout << "collision detection\n";
+                    troopsRender[k].setOutlineThickness(1);
+                    Europe::hasMapChanged = true;
+                }
+                else {
+                    //if (troop.getOutlineThickness() == 1) change = true;
+                    troopsRender[k].setOutlineThickness(0);
+                }
+            }
+            if (Europe::hasMapChanged) {
+                RenderTroops();
+            }
             for (auto shape : shapes)
             {
                 if (gui.hovered) {collision = true; break; }
@@ -477,4 +513,11 @@ void Europe::CreateAdjacentTerritories() {
     }
 }
 
+void Europe::CreateAndRenderTroops() {
+    CreateTroopBatch();
+    RenderTroops();
+}
+
 Europe Europe::instance;
+
+bool Europe::hasMapChanged;

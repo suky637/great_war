@@ -131,6 +131,10 @@ void Game::Exit() {
     // Saving happens here
     this->Save();
 
+    //for (auto p : Europe::instance.pool) {
+    //    p->detach();
+    //}
+
     exit(0);
 }
 

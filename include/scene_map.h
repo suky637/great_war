@@ -2,6 +2,8 @@
 #include "engine.h"
 #include "myguilib.h"
 #include "Physics/PIP.h"
+#include <future>
+#include <chrono>
 
 using json = nlohmann::json;
 
@@ -32,6 +34,10 @@ class Europe: public Scene
 
     std::string currentCountry = "";
 
+    public:
+
+    static bool hasMapChanged;
+
     // Rest
     bool hide_placeholder = false;
     std::map<std::string, std::unique_ptr<Script>> scripts;
@@ -46,7 +52,9 @@ class Europe: public Scene
     json adjacentPolygons{};
     std::map<std::string, std::string> region_to_iso{};
 
-    public:
+    std::vector<std::future<void>> pool{};
+
+
     sf::RenderTexture troop_render_batch;
     sf::RenderTexture render_batch;
     sf::RectangleShape background;
@@ -88,4 +96,6 @@ class Europe: public Scene
     void RenderBatch(bool dontClear = false);
     void ClearBatch();
     void CreateAdjacentTerritories();
+    void RenderTroops();
+    void CreateAndRenderTroops();
 };
