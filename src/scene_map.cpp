@@ -59,7 +59,7 @@ void Europe::CreateTroopBatch() {
             if (shape.owner != Game::instance.currentCountry) {
                     owned = false;
                     for (const auto& rgN : adjacentPolygons[shape.region_name]) {
-                        if (region_to_iso[rgN] == Game::instance.currentCountry) {
+                        if (Game::instance.currentSave["tiles"][rgN]["owner"] == Game::instance.currentCountry) {
                             adjacent = true;
                         }
                     }
@@ -430,12 +430,14 @@ void Europe::Update()
                 l_mustr = true;
             }
             if (Game::instance.currentSave["tiles"][atk.to]["troops"] <= 0) {
-                Game::instance.currentSave["tiles"][atk.to]["troops"] = 0;
+                Game::instance.currentSave["tiles"][atk.to]["troops"] = Game::instance.currentSave["tiles"][atk.from]["troops"];
+                Game::instance.currentSave["tiles"][atk.from]["troops"] = 0;
                 Game::instance.currentSave["tiles"][atk.to]["owner"] = Game::instance.currentSave["tiles"][atk.from]["owner"];
                 // must rerender the whole ass map
                 for (int i = 0; i < Europe::instance.shapes.size(); ++i) {
                     if (Europe::instance.shapes[i].region_name != atk.to) continue;
                     auto sh = Europe::instance.pixelizeShape(Europe::instance.shapes[i].shape, 1.f, Europe::instance.colours_iso[Game::instance.currentSave["tiles"][Europe::instance.shapes[i].region_name]["owner"]]);
+                    Europe::instance.shapes[i].owner = Game::instance.currentSave["tiles"][atk.from]["owner"];
                     Europe::instance.shapes[i].render_shape = sh.first;
                     Europe::instance.shapes[i].render_texture = sh.second;
                     RenderBatch();
@@ -471,10 +473,10 @@ void Europe::Update()
 
         // just testing something
         if (S_Mouse::instance.isMouseButtonUp(sf::Mouse::Button::Right)) {
-            bool troopT = false;
+            bool attacked = false;
             sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view);
                 for (auto [k, troop] : troopsRender) {
-                    if (region_to_iso[k] == Game::instance.currentCountry) continue;
+                    if (Game::instance.currentSave["tiles"][k]["owner"] == Game::instance.currentCountry) continue;
                     if (std::find(adjacentPolygons[selectedUnit].begin(), adjacentPolygons[selectedUnit].end(), k) == adjacentPolygons[selectedUnit].end()) continue;
                     // point in circle collision
                     if (
@@ -492,9 +494,29 @@ void Europe::Update()
                             std::cout << "Already made the attack!\n";
                         }else
                             attacks.push_back(attack);
+                        attacked = true;
                         
                     }
                 }
+            if (!attacked) {
+                for (auto shape : shapes)
+                    if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
+                    {
+                        if (gui.hovered) { break; }
+                        if (shape.owner != region_to_iso[selectedUnit]) continue;
+                        if (std::find(adjacentPolygons[selectedUnit].begin(), adjacentPolygons[selectedUnit].end(), shape.region_name) == adjacentPolygons[selectedUnit].end()) continue;
+                        if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
+                        {
+                            
+                            Game::instance.currentSave["tiles"][shape.region_name]["troops"] = Game::instance.currentSave["tiles"][selectedUnit]["troops"];
+                            Game::instance.currentSave["tiles"][selectedUnit]["troops"] = 0;
+                            CreateTroopBatch();
+                            RenderTroops();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         if (S_Mouse::instance.isMouseButtonUp(sf::Mouse::Button::Left)) {
@@ -502,7 +524,7 @@ void Europe::Update()
             bool troopT = false;
             sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view);
                 for (auto [k, troop] : troopsRender) {
-                    if (region_to_iso[k] != Game::instance.currentCountry) continue;
+                    if (Game::instance.currentSave["tiles"][k]["owner"] != Game::instance.currentCountry) continue;
                     // point in circle collision
                     if (
                         sqrt(
@@ -524,7 +546,7 @@ void Europe::Update()
                 Europe::hasMapChanged = false;
             }
             
-        for (auto shape : shapes)
+        for (auto shape : shapes) {
             if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
             {
                 if (gui.hovered) {collision = true; break; }
