@@ -19,6 +19,8 @@ class Component
     sf::Vector2f size;
     std::string id;
     bool visible = true;
+    virtual void SetVisible(bool visible);
+    virtual bool IsVisible();
     virtual void Input(sf::View* view);
     virtual bool isHovered(sf::View* view);
     virtual void Draw(sf::Font font);

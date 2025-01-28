@@ -40,6 +40,7 @@ void CountryManager::Update(GUI* gui)
         else {
             ima->visible = true;
             likeness->visible = true;
+
             int liken =  Game::instance.currentSave["countries"][Game::instance.currentCountry]["likeness"][selectedCountry];
             likeness->Value("Likeness: " + std::to_string(liken));
         }
@@ -57,6 +58,8 @@ void CountryManager::Update(GUI* gui)
         {
             hasSelectedACountry = true;
             Game::instance.currentCountry = selectedCountry;
+            Europe::instance.CreateTroopBatch();
+            Europe::instance.RenderTroops();
             Game::instance.currentSave["country"] = Game::instance.currentCountry;
             if (gui->Exist("selectFlag"))
                 gui->components.at("selectFlag")->visible = true;

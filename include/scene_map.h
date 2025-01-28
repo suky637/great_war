@@ -2,6 +2,7 @@
 #include "engine.h"
 #include "myguilib.h"
 #include "Physics/PIP.h"
+#include "engine/battle.h"
 #include <future>
 #include <chrono>
 
@@ -25,7 +26,6 @@ class Europe: public Scene
     sf::Texture europeReferenceMap;
 
     std::vector<std::pair<sf::Text, sf::CircleShape>> points{};
-    std::map<std::string, sf::Color> colours_iso{};
     sf::ConvexShape preview;
 
 
@@ -33,8 +33,12 @@ class Europe: public Scene
     sf::Sprite render_batch_sprite;
 
     std::string currentCountry = "";
+    sf::Clock whenAttack;
 
     public:
+    std::map<std::string, sf::Color> colours_iso{};
+
+    std::string selectedUnit;
 
     static bool hasMapChanged;
 
@@ -84,6 +88,7 @@ class Europe: public Scene
     void CreateTroopBatch();
     std::vector<Country> shapes{};
     std::map<std::string, std::string> isos{};
+    std::vector<Attack> attacks{};
     std::string sceneName;
     static Europe instance;
     Europe() = default;
@@ -98,4 +103,5 @@ class Europe: public Scene
     void CreateAdjacentTerritories();
     void RenderTroops();
     void CreateAndRenderTroops();
+    bool findAttack(Attack attack);
 };

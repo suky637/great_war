@@ -11,20 +11,19 @@
 
 #include "myguilib/Component.h"
 #include "myguilib/GUI.h"
-#include "language/gws.h"
 
-class Frame: public Component
+class Graph: public Component
 {
     private:
     sf::RectangleShape rect;
     GUI* gui;
-    GWS gws{};
-    bool hasLinked = false;
     public:
-    Frame(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string id = "", bool visible = true, std::string link_script = "");
+    std::vector<float> points{};
+    float precision = 1.f;
+    Graph(sf::RenderWindow* win, GUI* gui, sf::Vector2f pos, sf::Vector2f size, std::string id = "", bool visible = true);
     void Draw(sf::Font font) override;
     bool isHovered(sf::View* view) override;
-    void SetVisible(bool visible);
+    void addPoint(float y);
     std::string GetType() override;
-    Frame* GetComponent() override;
+    Graph* GetComponent() override;
 };

@@ -61,24 +61,17 @@ void ChooseSave::loadData() {
             json item = {
                 {"money", 10},
                 {"stability", 60},
-                {"territories", json::array()},
                 {"likeness", json::object()}
             };
             for (const auto& [k2, v2] : Europe::instance.isos) {
                 item["likeness"][k2] = 100;
-            }
-            // Horrible but works
-            for (const auto& region : Europe::instance.shapes) {
-                if (k == region.owner) {
-                    item["territories"].push_back(region.region_name);
-                }
             }
             save["countries"][k] = item;
         }
         for (const auto& region : Europe::instance.shapes) {
             save["tiles"][region.region_name] = {
                 {"owner", region.owner},
-                {"troops", 1}
+                {"troops", 5000}
             };
         }
     }
@@ -89,7 +82,7 @@ void ChooseSave::loadData() {
         */
 
         // Goodluck fixing performance issues later for loading data
-        for (auto& country : save["countries"].items()) {
+        /*for (auto& country : save["countries"].items()) {
             for (auto& territory : country.value().at("territories")) {
                 for (int i = 0; i < Europe::instance.shapes.size(); ++i) {
                     if (Europe::instance.shapes[i].region_name == territory) {
@@ -97,6 +90,18 @@ void ChooseSave::loadData() {
                     }
                 }
             }
+        }*/
+       for (auto& tile : save["tiles"].items()) {
+            for (int i = 0; i < Europe::instance.shapes.size(); ++i) {
+                if (Europe::instance.shapes[i].region_name == tile.key()) {
+                    Europe::instance.shapes[i].owner = save["tiles"][tile.key()]["owner"];
+                }
+            }
+       }
+        for (int i = 0; i < Europe::instance.shapes.size(); ++i) {
+            auto sh = Europe::instance.pixelizeShape(Europe::instance.shapes[i].shape, 1.f, Europe::instance.colours_iso[save["tiles"][Europe::instance.shapes[i].region_name]["owner"]]);
+            Europe::instance.shapes[i].render_shape = sh.first;
+            Europe::instance.shapes[i].render_texture = sh.second;
         }
 
         /*

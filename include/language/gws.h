@@ -27,7 +27,10 @@ enum GWS_EventTypes {
     ON_CLICKED,
     UPDATE,
     FIXED_UPDATE,
-    START
+    START,
+    ON_ENABLE,
+    ON_DISABLE,
+    FUNCTION,
 };
 
 struct GWS_Event {

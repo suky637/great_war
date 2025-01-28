@@ -16,7 +16,6 @@ Button::Button(
     this->win = win;
     this->position = pos;
     this->size = size;
-    this->visible = visible;
     
 
     this->rect.setSize(size);
@@ -49,6 +48,7 @@ Button::Button(
         //std::cout << "Linked the button [" << this->id << "] to " << linkScript << "!\n";
         gws.interpret(linkScript);
     }
+    SetVisible(visible);
     gui->components.insert_or_assign(this->id, std::make_unique<Button>(*this));
 }
 
@@ -123,6 +123,17 @@ bool Button::isHovered(sf::View* view)
         posView.y < this->rect.getPosition().y + this->rect.getSize().y &&
         posView.y > this->rect.getPosition().y
     );
+}
+
+void Button::SetVisible(bool visible) {
+    this->visible = visible;
+    if (visible) {
+        if (hasLinked)
+            gws.runEvent(id, GWS_EventTypes::ON_ENABLE, gui);
+    else
+        if (hasLinked)
+            gws.runEvent(id, GWS_EventTypes::ON_DISABLE, gui);
+    }
 }
 
 std::string Button::GetType()

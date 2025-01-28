@@ -14,7 +14,7 @@
 [ ] Stability points
 [ ] World News
 [ ] Adding troops
-[ ] Battle Simulation
+[*] Battle Simulation
 [ ] Gun modification
 [ ] Research Tree
 [*] Fixed bug with NONE (saving without selecting a country, then reloading makes it like you were playing as NONE)

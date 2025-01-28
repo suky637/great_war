@@ -4,6 +4,7 @@
 #include "gamelogic.h"
 #include "engine/Mouse.h"
 #include "engine/Keyboard.h"
+#include <X11/Xlib.h>
 
 #define MAX_FPS 1.f / 60.f
 
@@ -55,6 +56,10 @@ void doEvents(sf::RenderWindow* win)
 
 int main(int, char**){
 
+    if (!XInitThreads()) {
+        std::cerr << "XInitThreads failed\n";
+        return 1;
+    }
 
     sf::RenderWindow window{sf::VideoMode(1280, 720), "Window"};
     window.setVerticalSyncEnabled(false);

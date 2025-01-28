@@ -104,8 +104,8 @@ void GUI::getDataByJSON(std::string file, std::string prefix)
             sf::Vector2f position{element["position"][0], element["position"][1]};
             sf::Vector2f size{element["scale"][0], element["scale"][1]};
             std::string id = element["id"];
-
-            Frame{window, this, position, size, id, visible};
+            std::string linkScript = element.find("link") != element.end() ? element["link"] : "";
+            Frame{window, this, position, size, id, visible, linkScript};
         }
         else if (element["type"] == "BUTTON")
         {

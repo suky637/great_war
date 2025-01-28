@@ -91,6 +91,15 @@ void GWS::interpret(std::string file) {
             else if (type == "start") {
                 ev.type = GWS_EventTypes::START;
             }
+            else if (type == "onenable") {
+                ev.type = GWS_EventTypes::ON_ENABLE;
+            }
+            else if (type == "ondisable") {
+                ev.type = GWS_EventTypes::ON_DISABLE;
+            }
+            else if (type == "function") {
+                ev.type = GWS_EventTypes::FUNCTION;
+            }
             ev.id = id;
             events.push_back(ev);
         }

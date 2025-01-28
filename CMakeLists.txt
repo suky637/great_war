@@ -31,6 +31,7 @@ add_executable(ww1_game
     src/myguilib/DynLabel.cpp
     src/myguilib/ImageBox.cpp
     src/myguilib/DynImageBox.cpp
+    src/myguilib/Graph.cpp
     src/engine/EngineFunctions.cpp
     src/engine/Scene.cpp
     src/engine/Script.cpp
@@ -39,12 +40,14 @@ add_executable(ww1_game
     src/engine/Keyboard.cpp
     src/engine/Mouse.cpp
     src/engine/audio_manager.cpp
+    src/engine/battle.cpp
     src/Physics/PIP.cpp
     src/scripts/countryManager.cpp
     src/language/gws.cpp
     src/language/global_var.cpp
     src/Graphics/ShaderManager.cpp
+
 )
 
-target_link_libraries(ww1_game sfml-audio sfml-graphics sfml-window sfml-system OpenAL nlohmann_json)
+target_link_libraries(ww1_game sfml-audio sfml-graphics sfml-window sfml-system OpenAL nlohmann_json X11)
 target_include_directories(ww1_game PRIVATE ${CMAKE_SOURCE_DIR}/include/)

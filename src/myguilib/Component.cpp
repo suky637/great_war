@@ -22,3 +22,11 @@ Component* Component::GetComponent()
 {
     return this;
 }
+
+void Component::SetVisible(bool visible) {
+    this->visible = visible;
+}
+
+bool Component::IsVisible() {
+    return this->visible;
+}

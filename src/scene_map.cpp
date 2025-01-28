@@ -52,7 +52,7 @@ void Europe::CreateTroopBatch() {
     troopsRender.clear();
     for (auto shape : shapes) {
         int trp = Game::instance.currentSave["tiles"][shape.region_name]["troops"];
-        if (trp != 0) {
+        if (trp > 0) {
             // check for adjacent tiles
             bool owned = true;
             bool adjacent = false;
@@ -273,6 +273,31 @@ void Europe::Start()
         DynLabel* label = (DynLabel*)gui.components.at("money")->GetComponent();
         label->Value(std::to_string(client_money) + "M$");
     }
+    /*pool.push_back(std::async(std::launch::async, [&]() {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        while (true) {
+            if (S_Mouse::instance.isMouseButtonUp(sf::Mouse::Button::Left)) {
+                sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view);
+                for (auto [k, troop] : troopsRender) {
+                    // point in circle collision
+                    if (
+                        sqrt(
+                            (mousePos.x-(troop.getPosition().x+1.f)) *
+                            (mousePos.x-(troop.getPosition().x+1.f)) +
+                            (mousePos.y-(troop.getPosition().y+1.f)) * 
+                            (mousePos.y-(troop.getPosition().y+1.f))) <= 4.f) {
+                        //troopT = true;
+                        std::cout << "collision detection\n";
+                        troopsRender[k].setOutlineThickness(1);
+                        Europe::hasMapChanged = true;
+                    }
+                    else {
+                        troopsRender[k].setOutlineThickness(0);
+                    }
+                }
+            }
+        } 
+    }));*/
 }
 
 void Europe::Editor(bool gui_hovered)
@@ -351,6 +376,7 @@ void Europe::Editor(bool gui_hovered)
     }
     lastFocus = crntFocus;
     lastClick = crntClick;
+    whenAttack.restart();
 }
 
 void Europe::Update()
@@ -374,14 +400,6 @@ void Europe::Update()
         preview_index = 0;
         points.clear();
     }
-
-    for (int i = 0; i < pool.size(); ++i) {
-        if (pool.at(i).wait_for(std::chrono::milliseconds(0)) == std::future_status::ready) {
-            pool.at(i).get();
-            pool.erase(pool.begin() + i);
-        }
-    }
-
     for (const auto& [k, script] : scripts)
     {
         if (!((!lastFocus && crntFocus) || !crntFocus)) {
@@ -389,6 +407,55 @@ void Europe::Update()
             script->deltaTime = deltaTime;
             script->Update(&gui);
         }
+    }
+
+    if (whenAttack.getElapsedTime().asMilliseconds() > 1000) {
+        std::vector<int> to_erase{};
+        bool mustRerender = false;
+        int i = 0;
+        for (auto atk : attacks) {
+            bool l_mustr = false;
+            BattleData battleData;
+            battleData.amountOfTroops_Player = Game::instance.currentSave["tiles"][atk.from]["troops"];
+            battleData.amountOfTroops_Enemy = Game::instance.currentSave["tiles"][atk.to]["troops"];
+            battleData.enemyDefending = true;
+            BattleResult result = BattleSystem::simulateBattle(battleData);
+            Game::instance.currentSave["tiles"][atk.from]["troops"] = (int)Game::instance.currentSave["tiles"][atk.from]["troops"] - result.damageReceived;
+            Game::instance.currentSave["tiles"][atk.to]["troops"] = (int)Game::instance.currentSave["tiles"][atk.to]["troops"] - result.damageSent;
+            std::cout << "Received: " << result.damageReceived << " / Sent: " << result.damageSent << "\n";
+            std::cout << "Troops (player): " << Game::instance.currentSave["tiles"][atk.from]["troops"] << " / Troops (enemy): " << Game::instance.currentSave["tiles"][atk.to]["troops"] << "\n";
+            if (Game::instance.currentSave["tiles"][atk.from]["troops"] <= 0) {
+                Game::instance.currentSave["tiles"][atk.from]["troops"] = 0;
+                mustRerender = true;
+                l_mustr = true;
+            }
+            if (Game::instance.currentSave["tiles"][atk.to]["troops"] <= 0) {
+                Game::instance.currentSave["tiles"][atk.to]["troops"] = 0;
+                Game::instance.currentSave["tiles"][atk.to]["owner"] = Game::instance.currentSave["tiles"][atk.from]["owner"];
+                // must rerender the whole ass map
+                for (int i = 0; i < Europe::instance.shapes.size(); ++i) {
+                    if (Europe::instance.shapes[i].region_name != atk.to) continue;
+                    auto sh = Europe::instance.pixelizeShape(Europe::instance.shapes[i].shape, 1.f, Europe::instance.colours_iso[Game::instance.currentSave["tiles"][Europe::instance.shapes[i].region_name]["owner"]]);
+                    Europe::instance.shapes[i].render_shape = sh.first;
+                    Europe::instance.shapes[i].render_texture = sh.second;
+                    RenderBatch();
+                }
+                mustRerender = true;
+                l_mustr = true;
+            }
+            if (l_mustr) {
+                to_erase.push_back(i);
+            }
+            i++;
+        }
+        for (int ind : to_erase) {
+            attacks.erase(attacks.begin() + ind);
+        }
+        if (mustRerender) {
+            CreateTroopBatch();
+            RenderTroops();
+        }
+        whenAttack.restart();
     }
 
     if (!((!lastFocus && crntFocus) || !crntFocus))
@@ -403,33 +470,62 @@ void Europe::Update()
         this->Editor(gui.hovered);
 
         // just testing something
+        if (S_Mouse::instance.isMouseButtonUp(sf::Mouse::Button::Right)) {
+            bool troopT = false;
+            sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view);
+                for (auto [k, troop] : troopsRender) {
+                    if (region_to_iso[k] == Game::instance.currentCountry) continue;
+                    if (std::find(adjacentPolygons[selectedUnit].begin(), adjacentPolygons[selectedUnit].end(), k) == adjacentPolygons[selectedUnit].end()) continue;
+                    // point in circle collision
+                    if (
+                        sqrt(
+                            (mousePos.x-(troop.getPosition().x+1.f)) *
+                            (mousePos.x-(troop.getPosition().x+1.f)) +
+                            (mousePos.y-(troop.getPosition().y+1.f)) * 
+                            (mousePos.y-(troop.getPosition().y+1.f))) <= 4.f) {
+                        // Started a battle
+                        std::cout << "Battle started!\n";
+                        Attack attack;
+                        attack.from = selectedUnit;
+                        attack.to = k;
+                        if (this->findAttack(attack)) {
+                            std::cout << "Already made the attack!\n";
+                        }else
+                            attacks.push_back(attack);
+                        
+                    }
+                }
+        }
+
         if (S_Mouse::instance.isMouseButtonUp(sf::Mouse::Button::Left)) {
             bool collision = false;
             bool troopT = false;
-            Europe::hasMapChanged = false;
             sf::Vector2f mousePos = window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view);
-            for (auto [k, troop] : troopsRender) {
-                // point in circle collision
-                if (
-                    sqrt(
-                        (mousePos.x-(troop.getPosition().x+1.f)) *
-                        (mousePos.x-(troop.getPosition().x+1.f)) +
-                        (mousePos.y-(troop.getPosition().y+1.f)) * 
-                        (mousePos.y-(troop.getPosition().y+1.f))) <= 4.f) {
-                    troopT = true;
-                    std::cout << "collision detection\n";
-                    troopsRender[k].setOutlineThickness(1);
-                    Europe::hasMapChanged = true;
+                for (auto [k, troop] : troopsRender) {
+                    if (region_to_iso[k] != Game::instance.currentCountry) continue;
+                    // point in circle collision
+                    if (
+                        sqrt(
+                            (mousePos.x-(troop.getPosition().x+1.f)) *
+                            (mousePos.x-(troop.getPosition().x+1.f)) +
+                            (mousePos.y-(troop.getPosition().y+1.f)) * 
+                            (mousePos.y-(troop.getPosition().y+1.f))) <= 4.f) {
+                        troopsRender[k].setOutlineThickness(1);
+                        selectedUnit = k;
+                        Europe::hasMapChanged = true;
+                    }
+                    else {
+                        troopsRender[k].setOutlineThickness(0);
+                    }
                 }
-                else {
-                    //if (troop.getOutlineThickness() == 1) change = true;
-                    troopsRender[k].setOutlineThickness(0);
-                }
-            }
-            if (Europe::hasMapChanged) {
+            if (Europe::hasMapChanged || !troopT) {
+                //gws
                 RenderTroops();
+                Europe::hasMapChanged = false;
             }
-            for (auto shape : shapes)
+            
+        for (auto shape : shapes)
+            if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
             {
                 if (gui.hovered) {collision = true; break; }
                 if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
@@ -521,3 +617,10 @@ void Europe::CreateAndRenderTroops() {
 Europe Europe::instance;
 
 bool Europe::hasMapChanged;
+
+bool Europe::findAttack(Attack attack) {
+    for (auto a : attacks) {
+        if (a.from == attack.from && a.to == attack.to) return true;
+    }
+    return false;
+}

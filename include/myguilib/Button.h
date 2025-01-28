@@ -25,8 +25,8 @@ class Button: public Component
     bool lastClick = false;
     bool crntClicked = false;
     bool hasLinked = false;
-    GUI* gui;
     GWS gws{};
+    GUI* gui;
     public:
     Button(
         sf::RenderWindow* win, 
@@ -43,6 +43,7 @@ class Button: public Component
     void Input(sf::View* view) override;
     void Draw(sf::Font font) override;
     bool isHovered(sf::View* view) override;
+    void SetVisible(bool visible) override;
     std::string GetType() override;
     Button* GetComponent();
 };
