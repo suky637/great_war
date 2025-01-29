@@ -503,7 +503,8 @@ void Europe::Update()
                     if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
                     {
                         if (gui.hovered) { break; }
-                        if (shape.owner != region_to_iso[selectedUnit]) continue;
+                        if (shape.owner != Game::instance.currentSave["tiles"][selectedUnit]["owner"]) continue;
+                        if (shape.region_name == selectedUnit) continue;
                         if (std::find(adjacentPolygons[selectedUnit].begin(), adjacentPolygons[selectedUnit].end(), shape.region_name) == adjacentPolygons[selectedUnit].end()) continue;
                         if (Physics::PIP_Collision(shape.shape, window->mapPixelToCoords(sf::Mouse::getPosition(*window), *view)))
                         {
@@ -535,9 +536,11 @@ void Europe::Update()
                         troopsRender[k].setOutlineThickness(1);
                         selectedUnit = k;
                         Europe::hasMapChanged = true;
+                        break;
                     }
                     else {
                         troopsRender[k].setOutlineThickness(0);
+                        selectedUnit = "";
                     }
                 }
             if (Europe::hasMapChanged || !troopT) {
